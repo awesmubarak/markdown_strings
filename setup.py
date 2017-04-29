@@ -10,7 +10,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as file:
 
 setup(
      name='markdown_strings',
-     version='1.0.2',
+     version='1.0.4',
      description='Create markdown-formatted text',
      long_description=long_description,
      url='https://github.com/abactel/markdown_strings',

@@ -14,9 +14,9 @@ Header
 Return a header of specified level.
 ::
 
-    >>>header("Main Title", 1)
+    >>> header("Main Title", 1)
     '# Main Title'
-    >>>header("Smaller subtitle", 4)
+    >>> header("Smaller subtitle", 4)
     '#### Smaller subtitle'
 
 Italics
@@ -26,7 +26,7 @@ Return italics formatted text.
 ::
 
     >>> italics("This text is italics")
-    _This text is italics_
+    '_This text is italics_'
 
 Bold
 ----
