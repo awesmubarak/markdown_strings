@@ -1,0 +1,288 @@
+""" markdown_strings
+
+Markdown is a markup language with plain text formatting syntax. This package
+allows the creation of markdown-compliant strings. For information about
+markdown see:
+
+-   http://commonmark.org/
+-   https://daringfireball.net/projects/markdown/
+
+"""
+
+###### Standard markdown
+
+
+### Emphasis
+
+
+def header(heading_text, header_level):
+    """Return a header of specified level.
+
+    >>> header("Main Title", 1)
+    '# Main Title'
+    >>> header("Smaller subtitle", 4)
+    '#### Smaller subtitle'
+    """
+    return(("#" * header_level) + " " + str(heading_text))
+
+
+def italics(text):
+    """Return italics formatted text.
+
+    >>> italics("This text is italics")
+    '_This text is italics_'
+    """
+    return("_" + str(text) + "_")
+
+
+def bold(text):
+    """Return bold formatted text.
+
+    >>> bold("This text is bold")
+    '**This text is bold**'
+    """
+    return("**" + str(text) + "**")
+
+
+### Code formatting
+
+
+def inline_code(text):
+    """Return formatted inline code.
+
+    >>> inline_code("This text is code")
+    '`This text is code`'
+    """
+    return("`" + str(text) + "`")
+
+
+def code_block(text, language=""):
+    """Return a code block.
+
+    If a language is specified a fenced code block is produced, otherwise the
+    block is indented by four spaces.
+
+    Keyword arguments:
+    language -- Specifies the language to fence the code in (default blank).
+
+    >>> code_block("This is a simple codeblock.")
+    '    This is a simple codeblock.'
+    >>> code_block("This is a simple codeblock.\\nBut it has a linebreak!")
+    '    This is a simple codeblock.\\n    But it has a linebreak!'
+    >>> code_block("This block of code has a specified language.", "python")
+    '```python\\nThis block of code has a specified language.\\n```'
+    >>> code_block("So\\nmany\\nlinebreaks.", "python")
+    '```python\\nSo\\nmany\\nlinebreaks.\\n```'
+    """
+    if language:
+        return("```" + language + "\n" + text + "\n```")
+    else:
+        split_text = text.split("\n")
+        return("    " + "\n    ".join(split_text))
+
+
+### Links
+
+def link(text, link):
+    """Return an inline link.
+
+    >>> link ("This is a link", "https://github.com/abactel/markdown_strings")
+    '[This is a link](https://github.com/abactel/markdown_strings)'
+    """
+    return("[" + str(text) + "](" + link + ")") # link shouldn't be non-string
+
+
+def image(alt_text, link, title=""):
+    """Return an inline image.
+
+    Keyword arguments:
+    title -- Specify the title of the image, as seen when hovering over it.
+
+    >>> image("This is an image", "https://tinyurl.com/bright-green-tree")
+    '![This is an image](https://tinyurl.com/bright-green-tree)'
+    >>> image("This is an image", "https://tinyurl.com/bright-green-tree", "tree")
+    '![This is an image](https://tinyurl.com/bright-green-tree) "tree"'
+    """
+    image_string = "![" + str(alt_text) + "](" + link + ")"
+    if title:
+        image_string += ' "' + str(title) + '"'
+    return(image_string)
+
+
+### Lists
+
+
+def unordered_list(text_array):
+    """Return an unordered list from an array.
+
+    >>> unordered_list(["first", "second", "third", "fourth"])
+    '-   first\\n-   second\\n-   third\\n-   fourth'
+    >>> unordered_list([1, 2, 3, 4, 5])
+    '-   1\\n-   2\\n-   3\\n-   4\\n-   5'
+    """
+    text_list = []
+    for item in text_array:
+        text_list.append("-   " + str(item))
+    return("\n".join(text_list))
+
+
+def ordered_list(text_array):
+    """Return an ordered list from an array.
+
+    >>> ordered_list(["first", "second", "third", "fourth"])
+    '1.  first\\n2.  second\\n3.  third\\n4.  fourth'
+    """
+    text_list = []
+    position = 1
+    for item in text_array:
+        text_list.append((str(position) + ".").ljust(3) + " " + str(item))
+        position += 1
+    return("\n".join(text_list))
+
+
+### Miscellaneous
+
+
+def blockquote(text):
+    """Return a blockquote.
+
+    >>> blockquote("A simple blockquote")
+    '> A simple blockquote'
+    """
+    new_text = []
+    for item in text.split("\n"):
+        new_text.append("> " + str(item))
+    return("\n".join(new_text))
+
+
+def horizontal_rule():
+    """Return a horizontal rule.
+
+    >>> horizontal_rule()
+    '-------------------------------------------------------------------------------'
+    """
+    return("-" * 79)
+
+
+##### Non-standard markdown
+
+
+def strikethrough(text):
+    """Return text with strike-through formatting.
+
+    >>> strikethrough("This is a lie")
+    '~This is a lie~'
+    """
+    return("~" + text + "~")
+
+
+def task_list(task_array):
+    """Return a task list.
+
+    The task_array should be 2-dimensional; the first item should be the task
+    text, and the second the boolean completion state.
+
+    >>> task_list([["Be born", True], ["Be dead", False]])
+    '- [X] Be born\\n- [ ] Be dead'
+
+    When displayed using `print`, this will appear as:
+
+        - [X] Be born
+        - [ ] Be dead
+    """
+    task_list = []
+    for item in task_array:
+        task = "- [ ] " + item[0]
+        if item[1]:
+            task = task[:3] + "X" + task[4:]
+        task_list.append(task)
+    return("\n".join(task_list))
+
+
+### Tables
+
+
+def table_row(text_array, pad=-1):
+    """Return a single table row.
+
+    Keyword arguments:
+    pad -- The pad should be an array of the same size as the input text array.
+           It will be used to format the row's padding.
+
+    >>> table_row(["First column", "Second", "Third"])
+    '| First column | Second | Third |'
+    >>> table_row(["First column", "Second", "Third"], [10, 10, 10])
+    '| First column | Second     | Third      |'
+    """
+    if pad == -1:
+        pad = ([0] * len(text_array))
+    row = "|"
+    for column_number in range(len(text_array)):
+        padding = pad[column_number] + 1
+        row += ((" " + str(text_array[column_number])).ljust(padding) + " |")
+    return(row)
+
+
+def table_delimiter_row(number_of_columns):
+    """Return a delimiter row for use in a table.
+
+    >>> table_delimiter_row(3)
+    '| --- | --- | --- |'
+    """
+    text_array = []
+    for column in range(number_of_columns):
+        text_array.append("---")
+    return(table_row(text_array))
+
+
+def table_from_columns(big_array):
+    """Return a formatted table, generated from arrays representing columns.
+
+    The function requires a 2-dimensional array, where each array is a column
+    of the table. This will be used to generate a formatted table in string
+    format. The number of items in each columns does not need to be consitent.
+
+    >>> table_from_columns([["Name", "abactel", "Bob"], ["User", "4b4c73l", ""]])
+    '| Name    | User    |\\n| ------- | ------- |\\n| abactel | 4b4c73l |\\n| Bob     |         |'
+
+    When displayed using `print`, this will appear:
+
+        | Name    | User    |
+        | ------- | ------- |
+        | abactel | 4b4c73l |
+        | Bob     |         |
+    """
+    number_of_columns = len(big_array)
+    number_of_rows_in_column = []
+    for column_number in range(number_of_columns):
+        number_of_rows_in_column.append(len(big_array[column_number]))
+    longest_column = max(number_of_rows_in_column)
+    max_cell_size = []
+    for column_number in range(number_of_columns):
+        max_cell_size.append(len(max(big_array[column_number], key=len)))
+
+    table = []
+
+    # title row
+    row_array = []
+    for column_number in range(number_of_columns):
+        row_array.append(big_array[column_number][0])
+    table.append(table_row(row_array, pad=max_cell_size))
+
+    # delimiter row
+    row_array = []
+    for column_number in range(number_of_columns):
+        row_array.append("-" * max_cell_size[column_number])
+    table.append(table_row(row_array, pad=max_cell_size))
+
+
+    # create main body
+    for row in range(1, longest_column):
+        row_array = []
+        for column_number in range(number_of_columns):
+            if number_of_rows_in_column[column_number] > row:
+                row_array.append(big_array[column_number][row])
+            else:
+                row_array.append(" ")
+        table.append(table_row(row_array, pad=max_cell_size))
+    return("\n".join(table))
