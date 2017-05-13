@@ -3,7 +3,9 @@
 All notable changes to this project will be documented in this file. The format
 is based on [Keep a Changelog](http://keepachangelog.com/).
 
-## [Unreleased]
+## [1.4.2] - 2017-05-13
+### Fixed
+-   Attempt to improve README formatting.
 
 ## [1.4.1] - 2017-05-13
 ### Fixed
@@ -31,3 +33,4 @@ is based on [Keep a Changelog](http://keepachangelog.com/).
 [1.2.0]: https://github.com/abactel/markdown_strings/compare/v1.1.0...v1.2.0
 [1.4.0]: https://github.com/abactel/markdown_strings/compare/v1.2.0...v1.4.0
 [1.4.1]: https://github.com/abactel/markdown_strings/compare/v1.4.0...v1.4.1
+[1.4.2]: https://github.com/abactel/markdown_strings/compare/v1.4.1...v1.4.2
