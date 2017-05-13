@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file. The format
 is based on [Keep a Changelog](http://keepachangelog.com/) and this project
 adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.0] - 2017-05-13
+### Changed
+-   A functional style has been introduced for many functions.
+
 ## [1.0.8] - 2017-05-13
 ### Fixed
--   Links to diffa in `CHANGELOG.md`.
+-   Links to diffs in `CHANGELOG.md`.
 
 ## [1.0.7] - 2017-05-13
 ### Fixed
@@ -48,3 +52,4 @@ adheres to [Semantic Versioning](http://semver.org/).
 [1.0.6]: https://github.com/abactel/markdown_strings/compare/v1.0.6...v1.0.5
 [1.0.7]: https://github.com/abactel/markdown_strings/compare/v1.0.7...v1.0.6
 [1.0.8]: https://github.com/abactel/markdown_strings/compare/v1.0.8...v1.0.7
+[1.1.0]: https://github.com/abactel/markdown_strings/compare/v1.1.0...v1.0.8

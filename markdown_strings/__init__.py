@@ -77,8 +77,7 @@ def code_block(text, language=""):
     if language:
         return("```" + language + "\n" + text + "\n```")
     else:
-        split_text = text.split("\n")
-        return("    " + "\n    ".join(split_text))
+        return("    " + "\n    ".join(text.split("\n")))
 
 
 ### Links
@@ -89,7 +88,7 @@ def link(text, link):
     >>> link ("This is a link", "https://github.com/abactel/markdown_strings")
     '[This is a link](https://github.com/abactel/markdown_strings)'
     """
-    return("[" + str(text) + "](" + link + ")") # link shouldn't be non-string
+    return("[" + str(text) + "](" + link + ")")
 
 
 def image(alt_text, link, title=""):
@@ -120,10 +119,7 @@ def unordered_list(text_array):
     >>> unordered_list([1, 2, 3, 4, 5])
     '-   1\\n-   2\\n-   3\\n-   4\\n-   5'
     """
-    text_list = []
-    for item in text_array:
-        text_list.append("-   " + str(item))
-    return("\n".join(text_list))
+    return("\n".join([("-   " + str(item)) for item in text_array]))
 
 
 def ordered_list(text_array):
@@ -133,10 +129,8 @@ def ordered_list(text_array):
     '1.  first\\n2.  second\\n3.  third\\n4.  fourth'
     """
     text_list = []
-    position = 1
-    for item in text_array:
-        text_list.append((str(position) + ".").ljust(3) + " " + str(item))
-        position += 1
+    for item in enumerate(text_array):
+        text_list.append((str(item[0] + 1) + ".").ljust(3) + " " + str(item[1]))
     return("\n".join(text_list))
 
 
@@ -149,10 +143,7 @@ def blockquote(text):
     >>> blockquote("A simple blockquote")
     '> A simple blockquote'
     """
-    new_text = []
-    for item in text.split("\n"):
-        new_text.append("> " + str(item))
-    return("\n".join(new_text))
+    return("\n".join(["> " + str(item) for item in text.split("\n")]))
 
 
 def horizontal_rule():
@@ -229,10 +220,7 @@ def table_delimiter_row(number_of_columns):
     >>> table_delimiter_row(3)
     '| --- | --- | --- |'
     """
-    text_array = []
-    for column in range(number_of_columns):
-        text_array.append("---")
-    return(table_row(text_array))
+    return(table_row(["---" for column in range(number_of_columns)]))
 
 
 def table_from_columns(big_array):
@@ -253,20 +241,12 @@ def table_from_columns(big_array):
         | Bob     |         |
     """
     number_of_columns = len(big_array)
-    number_of_rows_in_column = []
-    for column_number in range(number_of_columns):
-        number_of_rows_in_column.append(len(big_array[column_number]))
-    longest_column = max(number_of_rows_in_column)
-    max_cell_size = []
-    for column_number in range(number_of_columns):
-        max_cell_size.append(len(max(big_array[column_number], key=len)))
-
+    number_of_rows_in_column = [len(column) for column in big_array]
+    max_cell_size = [len(max(column, key=len))  for column in big_array]
     table = []
 
     # title row
-    row_array = []
-    for column_number in range(number_of_columns):
-        row_array.append(big_array[column_number][0])
+    row_array = [column[0] for column in big_array]
     table.append(table_row(row_array, pad=max_cell_size))
 
     # delimiter row
@@ -275,14 +255,13 @@ def table_from_columns(big_array):
         row_array.append("-" * max_cell_size[column_number])
     table.append(table_row(row_array, pad=max_cell_size))
 
-
-    # create main body
-    for row in range(1, longest_column):
+    # body rows
+    for row in range(1, max(number_of_rows_in_column)):
         row_array = []
         for column_number in range(number_of_columns):
             if number_of_rows_in_column[column_number] > row:
                 row_array.append(big_array[column_number][row])
             else:
-                row_array.append(" ")
+                row_array.append()
         table.append(table_row(row_array, pad=max_cell_size))
     return("\n".join(table))
