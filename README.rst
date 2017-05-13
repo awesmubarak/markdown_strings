@@ -6,6 +6,7 @@ Markdown is a markup language with plain text formatting syntax. This package
 allows the creation of markdown-compliant strings. The following is a summary
 of features with usage examples.
 
+
 Standard markdown features
 ==========================
 
@@ -20,6 +21,7 @@ Return a header of specified level.
     >>> header("Smaller subtitle", 4)
     '#### Smaller subtitle'
 
+
 Italics
 -------
 
@@ -28,6 +30,7 @@ Return italics formatted text.
 
     >>> italics("This text is italics")
     '_This text is italics_'
+
 
 Bold
 ----
@@ -38,6 +41,7 @@ Return bold formatted text.
     >>> bold("This text is bold")
     '**This text is bold**'
 
+
 Inline code
 -----------
 
@@ -46,6 +50,7 @@ Return formatted inline code.
 
     >>> inline_code("This text is code")
     '`This text is code`'
+
 
 Code block
 ----------
@@ -125,6 +130,7 @@ Return a blockquote.
     >>> blockquote("A simple blockquote")
     '> A simple blockquote'
 
+
 Horizontal rule
 ---------------
 
@@ -146,7 +152,6 @@ Return text with strike-through formatting.
 
     >>> strikethrough("This is a lie")
     '~This is a lie~'
-
 
 
 Task list
@@ -184,6 +189,7 @@ Keyword arguments:
        >>> table_row(["First column", "Second", "Third"], [10, 10, 10])
        '| First column | Second     | Third      |'
 
+
 Delimiter row
 -------------
 
@@ -192,6 +198,7 @@ Return a delimiter row for use in a table.
 
     >>> table_delimiter_row(3)
     '| --- | --- | --- |'
+
 
 Table from columns
 ------------------
