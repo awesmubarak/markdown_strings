@@ -3,7 +3,8 @@ Markdown_strings package
 ========================
 
 Markdown is a markup language with plain text formatting syntax. This package
-allows the creation of markdown-compliant strings.
+allows the creation of markdown-compliant strings. The following is a summary
+of features with usage examples.
 
 Standard markdown features
 ==========================
@@ -55,8 +56,7 @@ If a language is specified a fenced code block is produced, otherwise the
 block is indented by four spaces.
 
 Keyword arguments:
-
-language -- Specifies the language to fence the code in (default blank).
+    language -- Specifies the language to fence the code in (default blank).
 ::
 
     >>> code_block("This is a simple codeblock.")
@@ -85,8 +85,7 @@ Image
 Return an inline image.
 
 Keyword arguments:
-
-title -- Specify the title of the image, as seen when hovering over it.
+   title -- Specify the title of the image, as seen when hovering over it.
 ::
 
     >>> image("This is an image", "https://tinyurl.com/bright-green-tree")
@@ -176,8 +175,8 @@ Return a single table row.
 
 Keyword arguments:
 
-pad -- The pad should be an array of the same size as the input text array.
-It will be used to format the row's padding.
+    pad -- The pad should be an array of the same size as the input text array.
+    It will be used to format the row's padding.
 ::
 
        >>> table_row(["First column", "Second", "Third"])
@@ -207,7 +206,7 @@ format. The number of items in each columns does not need to be consitent.
     >>> table_from_columns([["Name", "abactel", "Bob"], ["User", "4b4c73l", ""]])
     '| Name    | User    |\\n| ------- | ------- |\\n| abactel | 4b4c73l |\\n| Bob     |         |'
 
-When displayed using `print`, this will appear:
+When displayed using `print`, this will appear as:
 ::
 
     | Name    | User    |
