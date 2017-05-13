@@ -77,7 +77,7 @@ def code_block(text, language=""):
     if language:
         return("```" + language + "\n" + text + "\n```")
     else:
-        return("    " + "\n    ".join(text.split("\n")))
+        return("\n".join(["    " + item for item in text.split("\n")]))
 
 
 ### Links
