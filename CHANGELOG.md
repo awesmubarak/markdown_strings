@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. The format
 is based on [Keep a Changelog](http://keepachangelog.com/) and this project
 adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.1] - 2017-05-13
+### Changed
+-   Indentation is now more elegant.
+
 ## [1.1.0] - 2017-05-13
 ### Changed
 -   A functional style has been introduced for many functions.
@@ -53,3 +57,5 @@ adheres to [Semantic Versioning](http://semver.org/).
 [1.0.7]: https://github.com/abactel/markdown_strings/compare/v1.0.7...v1.0.6
 [1.0.8]: https://github.com/abactel/markdown_strings/compare/v1.0.8...v1.0.7
 [1.1.0]: https://github.com/abactel/markdown_strings/compare/v1.1.0...v1.0.8
+[1.1.1]: https://github.com/abactel/markdown_strings/compare/v1.1.1...v1.1.0
+
