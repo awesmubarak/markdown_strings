@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. The format
 is based on [Keep a Changelog](http://keepachangelog.com/) and this project
 adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.2] - 2017-05-16
+### Fixed
+-   Delimiter in strings are now escaped properly (see [issue #1][]).
+
 ## [1.1.1] - 2017-05-13
 ### Changed
 -   Indentation is now more elegant.
@@ -58,4 +62,6 @@ adheres to [Semantic Versioning](http://semver.org/).
 [1.0.8]: https://github.com/abactel/markdown_strings/compare/v1.0.8...v1.0.7
 [1.1.0]: https://github.com/abactel/markdown_strings/compare/v1.1.0...v1.0.8
 [1.1.1]: https://github.com/abactel/markdown_strings/compare/v1.1.1...v1.1.0
+[1.1.1]: https://github.com/abactel/markdown_strings/compare/v1.1.2...v1.1.1
 
+[issue #1]: https://github.com/abactel/markdown_strings/issues/1

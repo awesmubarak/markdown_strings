@@ -31,8 +31,10 @@ def italics(text):
 
     >>> italics("This text is italics")
     '_This text is italics_'
+    >>> italics("A wild _underscore_ appears")
+    '_A wild \\\_underscore\\\_ appears_'
     """
-    return("_" + str(text) + "_")
+    return("_" + str(text.replace("_", "\_").replace("*", "\*")) + "_")
 
 
 def bold(text):
@@ -40,8 +42,10 @@ def bold(text):
 
     >>> bold("This text is bold")
     '**This text is bold**'
+    >>> bold("Oh look, **stars** everywhere")
+    '**Oh look, \\\*\\\*stars\\\*\\\* everywhere**'
     """
-    return("**" + str(text) + "**")
+    return("**" + str(text.replace("**", "\*\*").replace("__", "\_\_")) + "**")
 
 
 ### Code formatting
