@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. The format
 is based on [Keep a Changelog](http://keepachangelog.com/) and this project
 adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.0] - 2017-05-23
+### Changed
+-   Function `table_from_columns` is now just `table`.
+
 ## [1.1.2] - 2017-05-16
 ### Fixed
 -   Delimiter in strings are now escaped properly (see [issue #1][]).

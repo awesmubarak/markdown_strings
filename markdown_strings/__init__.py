@@ -227,14 +227,14 @@ def table_delimiter_row(number_of_columns):
     return(table_row(["---" for column in range(number_of_columns)]))
 
 
-def table_from_columns(big_array):
+def table(big_array):
     """Return a formatted table, generated from arrays representing columns.
 
     The function requires a 2-dimensional array, where each array is a column
     of the table. This will be used to generate a formatted table in string
     format. The number of items in each columns does not need to be consitent.
 
-    >>> table_from_columns([["Name", "abactel", "Bob"], ["User", "4b4c73l", ""]])
+    >>> table([["Name", "abactel", "Bob"], ["User", "4b4c73l", ""]])
     '| Name    | User    |\\n| ------- | ------- |\\n| abactel | 4b4c73l |\\n| Bob     |         |'
 
     When displayed using `print`, this will appear:
