@@ -1,4 +1,4 @@
-""" markdown_strings
+"""markdown_strings
 
 Markdown is a markup language with plain text formatting syntax. This package
 allows the creation of markdown-compliant strings. For information about
@@ -246,7 +246,7 @@ def table(big_array):
     """
     number_of_columns = len(big_array)
     number_of_rows_in_column = [len(column) for column in big_array]
-    max_cell_size = [len(max(column, key=len))  for column in big_array]
+    max_cell_size = [len(max(column, key=len)) for column in big_array]
     table = []
 
     # title row
