@@ -6,6 +6,8 @@ Markdown is a markup language with plain text formatting syntax. This package
 allows the creation of markdown-compliant strings. The following is a summary
 of features with usage examples.
 
+Note: asterisk and underscores are escaped for all functions that do not format
+to code (inline_code and code_block).
 
 Standard markdown features
 ==========================
@@ -220,3 +222,23 @@ When displayed using `print`, this will appear as:
     | ------- | ------- |
     | abactel | 4b4c73l |
     | Bob     |         |
+
+
+Helper functions
+================
+
+Return text with formatting escaped
+
+Markdown requires a backslash before literal inderscores or asterisk, to avoid
+formatting to bold or italics.
+::
+
+    >>> esc_format("Normal text")
+    'Normal text'
+    >>> esc_format("Text with **bold**")
+    'Text with \\\*\\\*bold\\\*\\\*'
+    >>> esc_format("Text with _italics_")
+    'Text with \\\_italics\\\_'
+    >>> esc_format("Text with _**complicated** formatting_")
+    'Text with \\\_\\\*\\\*complicated\\\*\\\* formatting\\\_'
+    """

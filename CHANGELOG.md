@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file. The format
 is based on [Keep a Changelog](http://keepachangelog.com/) and this project
 adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.1.0] -  2017-05-30
+### Changed
+-   Escape asterisk and undersocres in all functions that don't format to code.
+### Fixed
+-   Spacing in main program is more consistent.
+
 ## [2.0.0] - 2017-05-23
 ### Changed
 -   Function `table_from_columns` is now just `table`.
@@ -58,14 +64,18 @@ adheres to [Semantic Versioning](http://semver.org/).
 [Unreleased]: https://github.com/abactel/markdown_strings/compare/v0.3.0...HEAD
 [1.0.0]: https://github.com/abactel/markdown_strings/commit/328395bd8ca7024d23270164623c28f49c544e20
 [1.0.1]: https://github.com/abactel/markdown_strings/compare/v1.0.0...v1.0.1
-[1.0.2]: https://github.com/abactel/markdown_strings/compare/v1.0.2...v1.0.1
-[1.0.4]: https://github.com/abactel/markdown_strings/compare/v1.0.4...v1.0.2
-[1.0.5]: https://github.com/abactel/markdown_strings/compare/v1.0.5...v1.0.4
-[1.0.6]: https://github.com/abactel/markdown_strings/compare/v1.0.6...v1.0.5
-[1.0.7]: https://github.com/abactel/markdown_strings/compare/v1.0.7...v1.0.6
-[1.0.8]: https://github.com/abactel/markdown_strings/compare/v1.0.8...v1.0.7
-[1.1.0]: https://github.com/abactel/markdown_strings/compare/v1.1.0...v1.0.8
-[1.1.1]: https://github.com/abactel/markdown_strings/compare/v1.1.1...v1.1.0
-[1.1.1]: https://github.com/abactel/markdown_strings/compare/v1.1.2...v1.1.1
+[1.0.2]: https://github.com/abactel/markdown_strings/compare/v1.0.1...v1.0.2
+[1.0.4]: https://github.com/abactel/markdown_strings/compare/v1.0.2...v1.0.4
+[1.0.5]: https://github.com/abactel/markdown_strings/compare/v1.0.4...v1.0.5
+[1.0.6]: https://github.com/abactel/markdown_strings/compare/v1.0.5...v1.0.6
+[1.0.7]: https://github.com/abactel/markdown_strings/compare/v1.0.6...v1.0.7
+[1.0.8]: https://github.com/abactel/markdown_strings/compare/v1.0.7...v1.0.8
+[1.1.0]: https://github.com/abactel/markdown_strings/compare/v1.0.8...v1.1.0
+[1.1.1]: https://github.com/abactel/markdown_strings/compare/v1.1.0...v1.1.1
+[1.1.2]: https://github.com/abactel/markdown_strings/compare/v1.1.1...v1.1.2
+[2.0.0]: https://github.com/abactel/markdown_strings/compare/v1.1.2...v2.0.0
+[2.1.0]: https://github.com/abactel/markdown_strings/compare/v1.0.0...v2.1.0
+
+
 
 [issue #1]: https://github.com/abactel/markdown_strings/issues/1

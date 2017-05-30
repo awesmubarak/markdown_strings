@@ -9,10 +9,31 @@ markdown see:
 
 """
 
-###### Standard markdown
+# Helper functions
 
 
-### Emphasis
+def esc_format(text):
+    """Return text with formatting escaped
+
+    Markdown requires a backslash before literal inderscores or asterix, to
+    avoid formatting to bold or italics.
+
+    >>> esc_format("Normal text")
+    'Normal text'
+    >>> esc_format("Text with **bold**")
+    'Text with \\\*\\\*bold\\\*\\\*'
+    >>> esc_format("Text with _italics_")
+    'Text with \\\_italics\\\_'
+    >>> esc_format("Text with _**complicated** formatting_")
+    'Text with \\\_\\\*\\\*complicated\\\*\\\* formatting\\\_'
+    """
+    return str(text).replace("_", "\_").replace("*", "\*")
+
+
+# Standard markdown
+
+
+# Emphasis
 
 
 def header(heading_text, header_level):
@@ -23,7 +44,7 @@ def header(heading_text, header_level):
     >>> header("Smaller subtitle", 4)
     '#### Smaller subtitle'
     """
-    return(("#" * header_level) + " " + str(heading_text))
+    return(("#" * header_level) + " " + esc_format(heading_text))
 
 
 def italics(text):
@@ -34,7 +55,7 @@ def italics(text):
     >>> italics("A wild _underscore_ appears")
     '_A wild \\\_underscore\\\_ appears_'
     """
-    return("_" + str(text.replace("_", "\_").replace("*", "\*")) + "_")
+    return("_" + esc_format(text) + "_")
 
 
 def bold(text):
@@ -45,10 +66,10 @@ def bold(text):
     >>> bold("Oh look, **stars** everywhere")
     '**Oh look, \\\*\\\*stars\\\*\\\* everywhere**'
     """
-    return("**" + str(text.replace("**", "\*\*").replace("__", "\_\_")) + "**")
+    return("**" + esc_format(text) + "**")
 
 
-### Code formatting
+# Code formatting
 
 
 def inline_code(text):
@@ -84,7 +105,7 @@ def code_block(text, language=""):
         return("\n".join(["    " + item for item in text.split("\n")]))
 
 
-### Links
+# Links
 
 def link(text, link):
     """Return an inline link.
@@ -92,7 +113,7 @@ def link(text, link):
     >>> link ("This is a link", "https://github.com/abactel/markdown_strings")
     '[This is a link](https://github.com/abactel/markdown_strings)'
     """
-    return("[" + str(text) + "](" + link + ")")
+    return("[" + esc_format(text) + "](" + link + ")")
 
 
 def image(alt_text, link, title=""):
@@ -106,13 +127,13 @@ def image(alt_text, link, title=""):
     >>> image("This is an image", "https://tinyurl.com/bright-green-tree", "tree")
     '![This is an image](https://tinyurl.com/bright-green-tree) "tree"'
     """
-    image_string = "![" + str(alt_text) + "](" + link + ")"
+    image_string = "![" + esc_format(alt_text) + "](" + link + ")"
     if title:
-        image_string += ' "' + str(title) + '"'
+        image_string += ' "' + esc_format(title) + '"'
     return(image_string)
 
 
-### Lists
+# Lists
 
 
 def unordered_list(text_array):
@@ -123,7 +144,7 @@ def unordered_list(text_array):
     >>> unordered_list([1, 2, 3, 4, 5])
     '-   1\\n-   2\\n-   3\\n-   4\\n-   5'
     """
-    return("\n".join([("-   " + str(item)) for item in text_array]))
+    return("\n".join([("-   " + esc_format(item)) for item in text_array]))
 
 
 def ordered_list(text_array):
@@ -133,12 +154,13 @@ def ordered_list(text_array):
     '1.  first\\n2.  second\\n3.  third\\n4.  fourth'
     """
     text_list = []
-    for item in enumerate(text_array):
-        text_list.append((str(item[0] + 1) + ".").ljust(3) + " " + str(item[1]))
+    for number, item in enumerate(text_array):
+        text_list.append((esc_format(number + 1) + ".").ljust(3)
+                         + " " + esc_format(item))
     return("\n".join(text_list))
 
 
-### Miscellaneous
+# Miscellaneous
 
 
 def blockquote(text):
@@ -147,7 +169,7 @@ def blockquote(text):
     >>> blockquote("A simple blockquote")
     '> A simple blockquote'
     """
-    return("\n".join(["> " + str(item) for item in text.split("\n")]))
+    return("\n".join(["> " + esc_format(item) for item in text.split("\n")]))
 
 
 def horizontal_rule():
@@ -159,7 +181,7 @@ def horizontal_rule():
     return("-" * 79)
 
 
-##### Non-standard markdown
+# Non-standard markdown
 
 
 def strikethrough(text):
@@ -168,7 +190,7 @@ def strikethrough(text):
     >>> strikethrough("This is a lie")
     '~This is a lie~'
     """
-    return("~" + text + "~")
+    return("~" + esc_format(text) + "~")
 
 
 def task_list(task_array):
@@ -186,15 +208,15 @@ def task_list(task_array):
         - [ ] Be dead
     """
     task_list = []
-    for item in task_array:
-        task = "- [ ] " + item[0]
-        if item[1]:
+    for item, completed in task_array:
+        task = "- [ ] " + esc_format(item)
+        if completed:
             task = task[:3] + "X" + task[4:]
         task_list.append(task)
     return("\n".join(task_list))
 
 
-### Tables
+# Tables
 
 
 def table_row(text_array, pad=-1):
@@ -214,7 +236,7 @@ def table_row(text_array, pad=-1):
     row = "|"
     for column_number in range(len(text_array)):
         padding = pad[column_number] + 1
-        row += ((" " + str(text_array[column_number])).ljust(padding) + " |")
+        row += ((" " + esc_format(text_array[column_number])).ljust(padding) + " |")
     return(row)
 
 
