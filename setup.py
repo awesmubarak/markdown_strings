@@ -10,12 +10,12 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as file:
 
 setup(
      name='markdown_strings',
-     version='2.1.1',
+     version='2.1.3',
      description='Create markdown formatted text',
      long_description=long_description,
-     url='https://github.com/abactel/markdown_strings',
-     author='abactel',
-     author_email='abactel@protonmail.com',
+     url='https://github.com/awesmubarak/markdown_strings',
+     author='Awes Mubarak',
+     author_email='awes.mubarak@awesmubarak.com',
      license='MIT',
      classifiers=[
          'Development Status :: 5 - Production/Stable',
