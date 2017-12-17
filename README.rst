@@ -30,7 +30,7 @@ Specifying a level outside of the style's range results in a ValueError.
     '# Main Title'
     >>> header("Smaller subtitle", 4)
     '#### Smaller subtitle'
-    >>> header("Setext style", 2)
+    >>> header("Setext style", 2, "setext")
     'Setext style\n---'
 
 

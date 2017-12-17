@@ -13,7 +13,7 @@ markdown see:
 
 
 def esc_format(text):
-    """Return text with formatting escaped
+    """Return text with formatting escaped.
 
     Markdown requires a backslash before literal inderscores or asterisk, to
     avoid formatting to bold or italics.
@@ -21,13 +21,13 @@ def esc_format(text):
     >>> esc_format("Normal text")
     'Normal text'
     >>> esc_format("Text with **bold**")
-    'Text with \\\*\\\*bold\\\*\\\*'
+    'Text with **bold**'
     >>> esc_format("Text with _italics_")
-    'Text with \\\_italics\\\_'
+    'Text with _italics_'
     >>> esc_format("Text with _**complicated** formatting_")
-    'Text with \\\_\\\*\\\*complicated\\\*\\\* formatting\\\_'
+    'Text with _**complicated** formatting_'
     """
-    return str(text).replace("_", "\_").replace("*", "\*")
+    return str(text).replace("_", "_").replace("*", "*")
 
 
 # Standard markdown
@@ -51,22 +51,22 @@ def header(heading_text, header_level, style="atx"):
     '# Main Title'
     >>> header("Smaller subtitle", 4)
     '#### Smaller subtitle'
-    >>> header("Setext style", 2)
-    'Setext style\n---'
+    >>> header("Setext style", 2, style="setext")
+    'Setext style\\n---'
     """
-    if type(header_level) != int:
+    if not isinstance(header_level, int):
         raise TypeError("header_level must be int")
     if style not in ["atx", "setext"]:
         raise ValueError("Invalid style %s (choose 'atx' or 'setext')" % style)
     if style == "atx":
         if not 1 <= header_level <= 6:
             raise ValueError("Invalid level %d for atx" % header_level)
-        return(("#" * header_level) + " " + esc_format(heading_text))
+        return ("#" * header_level) + " " + esc_format(heading_text)
     else:
         if not 0 < header_level < 3:
             raise ValueError("Invalid level %d for setext" % header_level)
-        ch = "=" if header_level == 1 else "-"
-        return esc_format(heading_text) + ("\n%s" % (ch * 3))
+        header_character = "=" if header_level == 1 else "-"
+        return esc_format(heading_text) + ("\n%s" % (header_character * 3))
 
 
 def italics(text):
@@ -75,9 +75,9 @@ def italics(text):
     >>> italics("This text is italics")
     '_This text is italics_'
     >>> italics("A wild _underscore_ appears")
-    '_A wild \\\_underscore\\\_ appears_'
+    '_A wild _underscore_ appears_'
     """
-    return("_" + esc_format(text) + "_")
+    return "_" + esc_format(text) + "_"
 
 
 def bold(text):
@@ -86,9 +86,9 @@ def bold(text):
     >>> bold("This text is bold")
     '**This text is bold**'
     >>> bold("Oh look, **stars** everywhere")
-    '**Oh look, \\\*\\\*stars\\\*\\\* everywhere**'
+    '**Oh look, **stars** everywhere**'
     """
-    return("**" + esc_format(text) + "**")
+    return "**" + esc_format(text) + "**"
 
 
 # Code formatting
@@ -100,7 +100,7 @@ def inline_code(text):
     >>> inline_code("This text is code")
     '`This text is code`'
     """
-    return("`" + str(text) + "`")
+    return "`" + str(text) + "`"
 
 
 def code_block(text, language=""):
@@ -122,23 +122,22 @@ def code_block(text, language=""):
     '```python\\nSo\\nmany\\nlinebreaks.\\n```'
     """
     if language:
-        return("```" + language + "\n" + text + "\n```")
-    else:
-        return("\n".join(["    " + item for item in text.split("\n")]))
+        return "```" + language + "\n" + text + "\n```"
+    return "\n".join(["    " + item for item in text.split("\n")])
 
 
 # Links
 
-def link(text, link):
+def link(text, link_url):
     """Return an inline link.
 
     >>> link ("This is a link", "https://github.com/abactel/markdown_strings")
     '[This is a link](https://github.com/abactel/markdown_strings)'
     """
-    return("[" + esc_format(text) + "](" + link + ")")
+    return "[" + esc_format(text) + "](" + link_url + ")"
 
 
-def image(alt_text, link, title=""):
+def image(alt_text, link_url, title=""):
     """Return an inline image.
 
     Keyword arguments:
@@ -149,10 +148,10 @@ def image(alt_text, link, title=""):
     >>> image("This is an image", "https://tinyurl.com/bright-green-tree", "tree")
     '![This is an image](https://tinyurl.com/bright-green-tree) "tree"'
     """
-    image_string = "![" + esc_format(alt_text) + "](" + link + ")"
+    image_string = "![" + esc_format(alt_text) + "](" + link_url + ")"
     if title:
         image_string += ' "' + esc_format(title) + '"'
-    return(image_string)
+    return image_string
 
 
 # Lists
@@ -166,7 +165,7 @@ def unordered_list(text_array):
     >>> unordered_list([1, 2, 3, 4, 5])
     '-   1\\n-   2\\n-   3\\n-   4\\n-   5'
     """
-    return("\n".join([("-   " + esc_format(item)) for item in text_array]))
+    return "\n".join([("-   " + esc_format(item)) for item in text_array])
 
 
 def ordered_list(text_array):
@@ -179,7 +178,7 @@ def ordered_list(text_array):
     for number, item in enumerate(text_array):
         text_list.append((esc_format(number + 1) + ".").ljust(3)
                          + " " + esc_format(item))
-    return("\n".join(text_list))
+    return "\n".join(text_list)
 
 
 # Miscellaneous
@@ -191,7 +190,7 @@ def blockquote(text):
     >>> blockquote("A simple blockquote")
     '> A simple blockquote'
     """
-    return("\n".join(["> " + esc_format(item) for item in text.split("\n")]))
+    return "\n".join(["> " + esc_format(item) for item in text.split("\n")])
 
 
 def horizontal_rule(length=79, style="_"):
@@ -206,13 +205,13 @@ def horizontal_rule(length=79, style="_"):
     >>> horizontal_rule()
     '_______________________________________________________________________________'
     >>> horizontal_rule(length=5, style="*")
-    '***'
+    '*****'
     """
     if style not in ["_", "*"]:
         raise ValueError("Invalid style (choose '_' or '*')")
     if length < 3:
         raise ValueError("length must be >= 3")
-    return(style * length)
+    return style * length
 
 
 # Non-standard markdown
@@ -224,7 +223,7 @@ def strikethrough(text):
     >>> strikethrough("This is a lie")
     '~This is a lie~'
     """
-    return("~" + esc_format(text) + "~")
+    return "~" + esc_format(text) + "~"
 
 
 def task_list(task_array):
@@ -241,13 +240,13 @@ def task_list(task_array):
         - [X] Be born
         - [ ] Be dead
     """
-    task_list = []
+    tasks = []
     for item, completed in task_array:
         task = "- [ ] " + esc_format(item)
         if completed:
             task = task[:3] + "X" + task[4:]
-        task_list.append(task)
-    return("\n".join(task_list))
+        tasks.append(task)
+    return "\n".join(tasks)
 
 
 # Tables
@@ -255,7 +254,6 @@ def task_list(task_array):
 
 def table_row(text_array, pad=-1):
     """Return a single table row.
-
     Keyword arguments:
     pad -- The pad should be an array of the same size as the input text array.
            It will be used to format the row's padding.
@@ -271,21 +269,19 @@ def table_row(text_array, pad=-1):
     for column_number in range(len(text_array)):
         padding = pad[column_number] + 1
         row += ((" " + esc_format(text_array[column_number])).ljust(padding) + " |")
-    return(row)
+    return row
 
 
 def table_delimiter_row(number_of_columns):
     """Return a delimiter row for use in a table.
-
     >>> table_delimiter_row(3)
     '| --- | --- | --- |'
     """
-    return(table_row(["---" for column in range(number_of_columns)]))
+    return table_row(["---" for column in range(number_of_columns)])
 
 
 def table(big_array):
     """Return a formatted table, generated from arrays representing columns.
-
     The function requires a 2-dimensional array, where each array is a column
     of the table. This will be used to generate a formatted table in string
     format. The number of items in each columns does not need to be consitent.
@@ -294,7 +290,6 @@ def table(big_array):
     '| Name    | User    |\\n| ------- | ------- |\\n| abactel | 4b4c73l |\\n| Bob     |         |'
 
     When displayed using `print`, this will appear:
-
         | Name    | User    |
         | ------- | ------- |
         | abactel | 4b4c73l |
@@ -324,4 +319,4 @@ def table(big_array):
             else:
                 row_array.append()
         table.append(table_row(row_array, pad=max_cell_size))
-    return("\n".join(table))
+    return "\n".join(table)

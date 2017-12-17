@@ -9,22 +9,22 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as file:
     long_description = file.read()
 
 setup(
-     name='markdown_strings',
-     version='3.0.0',
-     description='Create markdown formatted text',
-     long_description=long_description,
-     url='https://github.com/awesmubarak/markdown_strings',
-     author='Awes Mubarak',
-     author_email='awes.mubarak@awesmubarak.com',
-     license='MIT',
-     classifiers=[
-         'Development Status :: 5 - Production/Stable',
-         'Intended Audience :: Developers',
-         'Operating System :: OS Independent',
-         'Topic :: Text Processing :: Markup',
-         'License :: OSI Approved :: MIT License',
-         'Programming Language :: Python'
-     ],
-     keywords='markdown md',
-     packages=['markdown_strings']
+    name='markdown_strings',
+    version='3.1.0',
+    description='Create markdown formatted text',
+    long_description=long_description,
+    url='https://github.com/awesmubarak/markdown_strings',
+    author='Awes Mubarak',
+    author_email='awes.mubarak@awesmubarak.com',
+    license='MIT',
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'Operating System :: OS Independent',
+        'Topic :: Text Processing :: Markup',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python'
+    ],
+    keywords='markdown md',
+    packages=['markdown_strings']
 )
