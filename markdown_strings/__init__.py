@@ -36,15 +36,37 @@ def esc_format(text):
 # Emphasis
 
 
-def header(heading_text, header_level):
+def header(heading_text, header_level, style="atx"):
     """Return a header of specified level.
+
+    Keyword arguments:
+        style -- Specifies the header style (default atx).
+            The "atx" style uses hash signs, and has 6 levels.
+            The "setext" style uses dashes or equals signs for headers of
+            levels 1 and 2 respectively, and is limited to those two levels.
+
+    Specifying a level outside of the style's range results in a ValueError.
 
     >>> header("Main Title", 1)
     '# Main Title'
     >>> header("Smaller subtitle", 4)
     '#### Smaller subtitle'
+    >>> header("Setext style", 2)
+    'Setext style\n---'
     """
-    return(("#" * header_level) + " " + esc_format(heading_text))
+    if type(header_level) != int:
+        raise TypeError("header_level must be int")
+    if style not in ["atx", "setext"]:
+        raise ValueError("Invalid style %s (choose 'atx' or 'setext')" % style)
+    if style == "atx":
+        if not 1 <= header_level <= 6:
+            raise ValueError("Invalid level %d for atx" % header_level)
+        return(("#" * header_level) + " " + esc_format(heading_text))
+    else:
+        if not 0 < header_level < 3:
+            raise ValueError("Invalid level %d for setext" % header_level)
+        ch = "=" if header_level == 1 else "-"
+        return esc_format(heading_text) + ("\n%s" % (ch * 3))
 
 
 def italics(text):
@@ -172,13 +194,25 @@ def blockquote(text):
     return("\n".join(["> " + esc_format(item) for item in text.split("\n")]))
 
 
-def horizontal_rule():
+def horizontal_rule(length=79, style="_"):
     """Return a horizontal rule.
 
+    Keyword arguments:
+        length -- Specifies the length of the rule (default 79, minimum 3).
+        style -- Character used for the rule (may be either "_" or "*").
+
+    If the length is too low, or the style is invalid, a ValueError is raised.
+
     >>> horizontal_rule()
-    '-------------------------------------------------------------------------------'
+    '_______________________________________________________________________________'
+    >>> horizontal_rule(length=5, style="*")
+    '***'
     """
-    return("-" * 79)
+    if style not in ["_", "*"]:
+        raise ValueError("Invalid style (choose '_' or '*')")
+    if length < 3:
+        raise ValueError("length must be >= 3")
+    return(style * length)
 
 
 # Non-standard markdown

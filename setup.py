@@ -10,7 +10,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as file:
 
 setup(
      name='markdown_strings',
-     version='2.1.3',
+     version='3.0.0',
      description='Create markdown formatted text',
      long_description=long_description,
      url='https://github.com/awesmubarak/markdown_strings',
