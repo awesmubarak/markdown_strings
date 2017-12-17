@@ -38,9 +38,12 @@ def esc_format(text):
 
 def header(heading_text, header_level, style="atx"):
     """Return a header of specified level.
-    The "atx" style uses hash signs, and has 6 levels.
-    The "setext" style uses dashes or equals signs for headers of level
-    1 and 2 respectively, and is limited to those two levels.
+
+    Keyword arguments:
+        style -- Specifies the header style (default atx).
+            The "atx" style uses hash signs, and has 6 levels.
+            The "setext" style uses dashes or equals signs for headers of
+            levels 1 and 2 respectively, and is limited to those two levels.
 
     Specifying a level outside of the style's range results in a ValueError.
 
@@ -192,8 +195,11 @@ def blockquote(text):
 
 
 def horizontal_rule(length=79, style="_"):
-    """Return a horizontal rule of given length (default 79, minimum 3).
-    style may be either "_" or "*".
+    """Return a horizontal rule.
+
+    Keyword arguments:
+        length -- Specifies the length of the rule (default 79, minimum 3).
+        style -- Character used for the rule (may be either "_" or "*").
 
     If the length is too low, or the style is invalid, a ValueError is raised.
 
