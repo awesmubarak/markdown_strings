@@ -128,6 +128,7 @@ def code_block(text, language=""):
 
 # Links
 
+
 def link(text, link_url):
     """Return an inline link.
 
@@ -176,8 +177,9 @@ def ordered_list(text_array):
     """
     text_list = []
     for number, item in enumerate(text_array):
-        text_list.append((esc_format(number + 1) + ".").ljust(3)
-                         + " " + esc_format(item))
+        text_list.append(
+            (esc_format(number + 1) + ".").ljust(3) + " " + esc_format(item)
+        )
     return "\n".join(text_list)
 
 
@@ -264,11 +266,11 @@ def table_row(text_array, pad=-1):
     '| First column | Second     | Third      |'
     """
     if pad == -1:
-        pad = ([0] * len(text_array))
+        pad = [0] * len(text_array)
     row = "|"
     for column_number in range(len(text_array)):
         padding = pad[column_number] + 1
-        row += ((" " + esc_format(text_array[column_number])).ljust(padding) + " |")
+        row += (" " + esc_format(text_array[column_number])).ljust(padding) + " |"
     return row
 
 
