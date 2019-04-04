@@ -15,7 +15,7 @@ markdown see:
 def esc_format(text):
     """Return text with formatting escaped.
 
-    Markdown requires a backslash before literal inderscores or asterisk, to
+    Markdown requires a backslash before literal underscores or asterisk, to
     avoid formatting to bold or italics.
 
     >>> esc_format("Normal text")
