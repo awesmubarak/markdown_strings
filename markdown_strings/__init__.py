@@ -20,14 +20,14 @@ def esc_format(text):
 
     >>> esc_format("Normal text")
     'Normal text'
-    >>> esc_format("Text with **bold**")
-    'Text with **bold**'
-    >>> esc_format("Text with _italics_")
-    'Text with _italics_'
-    >>> esc_format("Text with _**complicated** formatting_")
-    'Text with _**complicated** formatting_'
+    >>> esc_format("Text with **bold**") == r'Text with \\*\\*bold\\*\\*'
+    True
+    >>> esc_format("Text with _italics_") == r'Text with \\_italics\\_'
+    True
+    >>> esc_format("Text with _**complicated** format_") == r'Text with \\_\\*\\*complicated\\*\\* format\\_'
+    True
     """
-    return str(text).replace("_", "_").replace("*", "*")
+    return str(text).replace("_", r"\_").replace("*", r"\*")
 
 
 # Standard markdown
@@ -62,20 +62,19 @@ def header(heading_text, header_level, style="atx"):
         if not 1 <= header_level <= 6:
             raise ValueError("Invalid level %d for atx" % header_level)
         return ("#" * header_level) + " " + esc_format(heading_text)
-    else:
-        if not 0 < header_level < 3:
-            raise ValueError("Invalid level %d for setext" % header_level)
-        header_character = "=" if header_level == 1 else "-"
-        return esc_format(heading_text) + ("\n%s" % (header_character * 3))
+    if not 0 < header_level < 3:
+        raise ValueError("Invalid level %d for setext" % header_level)
+    header_character = "=" if header_level == 1 else "-"
+    return esc_format(heading_text) + ("\n%s" % (header_character * 3))
 
 
 def italics(text):
     """Return italics formatted text.
 
-    >>> italics("This text is italics")
-    '_This text is italics_'
-    >>> italics("A wild _underscore_ appears")
-    '_A wild _underscore_ appears_'
+    >>> italics("This text is italics") == '_This text is italics_'
+    True
+    >>> italics("A wild _underscore_ appears") == r'_A wild \\_underscore\\_ appears_'
+    True
     """
     return "_" + esc_format(text) + "_"
 
@@ -85,8 +84,8 @@ def bold(text):
 
     >>> bold("This text is bold")
     '**This text is bold**'
-    >>> bold("Oh look, **stars** everywhere")
-    '**Oh look, **stars** everywhere**'
+    >>> bold("Oh look, **stars** everywhere") == r'**Oh look, \\*\\*stars\\*\\* everywhere**'
+    True
     """
     return "**" + esc_format(text) + "**"
 
@@ -123,7 +122,7 @@ def code_block(text, language=""):
     """
     if language:
         return "```" + language + "\n" + text + "\n```"
-    return "\n".join(["    " + item for item in text.split("\n")])
+    return "\n".join([f"    {item}" for item in text.split("\n")])
 
 
 # Links
