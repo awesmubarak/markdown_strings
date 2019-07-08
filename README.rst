@@ -160,7 +160,6 @@ If the length is too low, or the style is invalid, a ValueError is raised.
     '_______________________________________________________________________________'
     >>> horizontal_rule(length=5, style="*")
     '***'
-    """
 
 
 Non-standard markdown
@@ -256,9 +255,8 @@ formatting to bold or italics.
     >>> esc_format("Normal text")
     'Normal text'
     >>> esc_format("Text with **bold**")
-    'Text with \\\*\\\*bold\\\*\\\*'
+    'Text with \*\*bold\*\*'
     >>> esc_format("Text with _italics_")
-    'Text with \\\_italics\\\_'
+    'Text with \_italics\_'
     >>> esc_format("Text with _**complicated** formatting_")
-    'Text with \\\_\\\*\\\*complicated\\\*\\\* formatting\\\_'
-    """
+    'Text with \_\*\*complicated\*\* formatting\_'
