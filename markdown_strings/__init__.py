@@ -20,14 +20,14 @@ def esc_format(text):
 
     >>> esc_format("Normal text")
     'Normal text'
-    >>> esc_format("Text with **bold**")
-    'Text with **bold**'
-    >>> esc_format("Text with _italics_")
-    'Text with _italics_'
-    >>> esc_format("Text with _**complicated** formatting_")
-    'Text with _**complicated** formatting_'
+    >>> esc_format("Text with **bold**") == r'Text with \\*\\*bold\\*\\*'
+    True
+    >>> esc_format("Text with _italics_") == r'Text with \\_italics\\_'
+    True
+    >>> esc_format("Text with _**complicated** format_") == r'Text with \\_\\*\\*complicated\\*\\* format\\_'
+    True
     """
-    return str(text).replace("_", "_").replace("*", "*")
+    return str(text).replace("_", r"\_").replace("*", r"\*")
 
 
 # Standard markdown
@@ -57,27 +57,25 @@ def header(heading_text, header_level, style="atx"):
     if not isinstance(header_level, int):
         raise TypeError("header_level must be int")
     if style not in ["atx", "setext"]:
-        raise ValueError("Invalid style %s (choose 'atx' or 'setext')" % style)
+        raise ValueError(f"Invalid style {style} (choose 'atx' or 'setext')")
     if style == "atx":
         if not 1 <= header_level <= 6:
-            raise ValueError("Invalid level %d for atx" % header_level)
-        return ("#" * header_level) + " " + esc_format(heading_text)
-    else:
-        if not 0 < header_level < 3:
-            raise ValueError("Invalid level %d for setext" % header_level)
-        header_character = "=" if header_level == 1 else "-"
-        return esc_format(heading_text) + ("\n%s" % (header_character * 3))
-
+            raise ValueError(f"Invalid level {header_level} for atx")
+        return f"{'#' * header_level} {esc_format(heading_text)}"
+    if not 0 < header_level < 3:
+        raise ValueError(f"Invalid level {header_level} for setext")
+    header_character = "=" if header_level == 1 else "-"
+    return f"{esc_format(heading_text)}\n{header_character * 3}"
 
 def italics(text):
     """Return italics formatted text.
 
-    >>> italics("This text is italics")
-    '_This text is italics_'
-    >>> italics("A wild _underscore_ appears")
-    '_A wild _underscore_ appears_'
+    >>> italics("This text is italics") == '_This text is italics_'
+    True
+    >>> italics("A wild _underscore_ appears") == r'_A wild \\_underscore\\_ appears_'
+    True
     """
-    return "_" + esc_format(text) + "_"
+    return f"_{esc_format(text)}_"
 
 
 def bold(text):
@@ -85,10 +83,10 @@ def bold(text):
 
     >>> bold("This text is bold")
     '**This text is bold**'
-    >>> bold("Oh look, **stars** everywhere")
-    '**Oh look, **stars** everywhere**'
+    >>> bold("Oh look, **stars** everywhere") == r'**Oh look, \\*\\*stars\\*\\* everywhere**'
+    True
     """
-    return "**" + esc_format(text) + "**"
+    return f"**{esc_format(text)}**"
 
 
 # Code formatting
@@ -100,7 +98,7 @@ def inline_code(text):
     >>> inline_code("This text is code")
     '`This text is code`'
     """
-    return "`" + str(text) + "`"
+    return f"`{str(text)}`"
 
 
 def code_block(text, language=""):
@@ -122,8 +120,8 @@ def code_block(text, language=""):
     '```python\\nSo\\nmany\\nlinebreaks.\\n```'
     """
     if language:
-        return "```" + language + "\n" + text + "\n```"
-    return "\n".join(["    " + item for item in text.split("\n")])
+        return f"```{language}\n{text}\n```"
+    return "\n".join([f"    {item}" for item in text.split("\n")])
 
 
 # Links
@@ -135,8 +133,7 @@ def link(text, link_url):
     >>> link ("This is a link", "https://github.com/abactel/markdown_strings")
     '[This is a link](https://github.com/abactel/markdown_strings)'
     """
-    return "[" + esc_format(text) + "](" + link_url + ")"
-
+    return f"[{esc_format(text)}]({link_url})"
 
 def image(alt_text, link_url, title=""):
     """Return an inline image.
@@ -149,9 +146,10 @@ def image(alt_text, link_url, title=""):
     >>> image("This is an image", "https://tinyurl.com/bright-green-tree", "tree")
     '![This is an image](https://tinyurl.com/bright-green-tree) "tree"'
     """
-    image_string = "![" + esc_format(alt_text) + "](" + link_url + ")"
+    # image_string = "![" + esc_format(alt_text) + "](" + link_url + ")"
+    image_string = f"![{esc_format(alt_text)}]({link_url})"
     if title:
-        image_string += ' "' + esc_format(title) + '"'
+        image_string += f' "{esc_format(title)}"'
     return image_string
 
 
@@ -166,7 +164,7 @@ def unordered_list(text_array):
     >>> unordered_list([1, 2, 3, 4, 5])
     '-   1\\n-   2\\n-   3\\n-   4\\n-   5'
     """
-    return "\n".join([("-   " + esc_format(item)) for item in text_array])
+    return "\n".join([f"-   {esc_format(item)}" for item in text_array])
 
 
 def ordered_list(text_array):
@@ -178,7 +176,7 @@ def ordered_list(text_array):
     text_list = []
     for number, item in enumerate(text_array):
         text_list.append(
-            (esc_format(number + 1) + ".").ljust(3) + " " + esc_format(item)
+            f"{(f'{esc_format(number + 1)}.').ljust(3)} {esc_format(item)}"
         )
     return "\n".join(text_list)
 
@@ -192,7 +190,7 @@ def blockquote(text):
     >>> blockquote("A simple blockquote")
     '> A simple blockquote'
     """
-    return "\n".join(["> " + esc_format(item) for item in text.split("\n")])
+    return "\n".join([f"> {esc_format(item)}" for item in text.split("\n")])
 
 
 def horizontal_rule(length=79, style="_"):
@@ -209,7 +207,7 @@ def horizontal_rule(length=79, style="_"):
     >>> horizontal_rule(length=5, style="*")
     '*****'
     """
-    if style not in ["_", "*"]:
+    if style not in ("_", "*"):
         raise ValueError("Invalid style (choose '_' or '*')")
     if length < 3:
         raise ValueError("length must be >= 3")
@@ -225,7 +223,7 @@ def strikethrough(text):
     >>> strikethrough("This is a lie")
     '~This is a lie~'
     """
-    return "~" + esc_format(text) + "~"
+    return f"~{esc_format(text)}~"
 
 
 def task_list(task_array):
@@ -244,10 +242,7 @@ def task_list(task_array):
     """
     tasks = []
     for item, completed in task_array:
-        task = "- [ ] " + esc_format(item)
-        if completed:
-            task = task[:3] + "X" + task[4:]
-        tasks.append(task)
+        tasks.append(f"- [{'X' if completed else ' '}] {esc_format(item)}")
     return "\n".join(tasks)
 
 
@@ -257,7 +252,7 @@ def task_list(task_array):
 def table_row(text_array, pad=-1):
     """Return a single table row.
     Keyword arguments:
-    pad -- The pad should be an array of the same size as the input text array.
+    pad -- The pad should be an array of the same size as the input text array.æ
            It will be used to format the row's padding.
 
     >>> table_row(["First column", "Second", "Third"])
