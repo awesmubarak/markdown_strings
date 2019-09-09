@@ -106,7 +106,8 @@ Keyword arguments:
 ::
 
     >>> image("This is an image", "https://tinyurl.com/bright-green-tree")
-    '![This is an image](https://tinyurl.com/bright-green-tree)'
+    '![This is an image](https://tinyurl.com/bright-green-tree)[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fawesmubarak%2Fmarkdown_strings.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fawesmubarak%2Fmarkdown_strings?ref=badge_shield)
+'
     >>> image("This is an image", "https://tinyurl.com/bright-green-tree", "tree")
     '![This is an image](https://tinyurl.com/bright-green-tree) "tree"'
 
@@ -260,3 +261,7 @@ formatting to bold or italics.
     'Text with \_italics\_'
     >>> esc_format("Text with _**complicated** formatting_")
     'Text with \_\*\*complicated\*\* formatting\_'
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fawesmubarak%2Fmarkdown_strings.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fawesmubarak%2Fmarkdown_strings?ref=badge_large)
