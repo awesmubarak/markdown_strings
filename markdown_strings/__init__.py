@@ -158,29 +158,29 @@ def image(alt_text, link_url, title=""):
 # Lists
 
 
-def unordered_list(text_array):
-    """Return an unordered list from an array.
+def unordered_list(text_list):
+    """Return an unordered list from an list.
 
     >>> unordered_list(["first", "second", "third", "fourth"])
     '-   first\\n-   second\\n-   third\\n-   fourth'
     >>> unordered_list([1, 2, 3, 4, 5])
     '-   1\\n-   2\\n-   3\\n-   4\\n-   5'
     """
-    return "\n".join([f"-   {esc_format(item)}" for item in text_array])
+    return "\n".join([f"-   {esc_format(item)}" for item in text_list])
 
 
-def ordered_list(text_array):
-    """Return an ordered list from an array.
+def ordered_list(text_list):
+    """Return an ordered list from an list.
 
     >>> ordered_list(["first", "second", "third", "fourth"])
     '1.  first\\n2.  second\\n3.  third\\n4.  fourth'
     """
-    text_list = []
-    for number, item in enumerate(text_array):
-        text_list.append(
+    ordered_list = []
+    for number, item in enumerate(text_list):
+        ordered_list.append(
             f"{(f'{esc_format(number + 1)}.').ljust(3)} {esc_format(item)}"
         )
-    return "\n".join(text_list)
+    return "\n".join(ordered_list)
 
 
 # Miscellaneous
@@ -228,10 +228,10 @@ def strikethrough(text):
     return f"~{esc_format(text)}~"
 
 
-def task_list(task_array):
+def task_list(task_list):
     """Return a task list.
 
-    The task_array should be 2-dimensional; the first item should be the task
+    The task_list should be 2-dimensional; the first item should be the task
     text, and the second the boolean completion state.
 
     >>> task_list([["Be born", True], ["Be dead", False]])
@@ -243,7 +243,7 @@ def task_list(task_array):
         - [ ] Be dead
     """
     tasks = []
-    for item, completed in task_array:
+    for item, completed in task_list:
         tasks.append(f"- [{'X' if completed else ' '}] {esc_format(item)}")
     return "\n".join(tasks)
 
@@ -251,10 +251,10 @@ def task_list(task_array):
 # Tables
 
 
-def table_row(text_array, pad=-1):
+def table_row(text_list, pad=-1):
     """Return a single table row.
     Keyword arguments:
-    pad -- The pad should be an array of the same size as the input text array.æ
+    pad -- The pad should be an list of the same size as the input text list.æ
            It will be used to format the row's padding.
 
     >>> table_row(["First column", "Second", "Third"])
@@ -263,11 +263,11 @@ def table_row(text_array, pad=-1):
     '| First column | Second     | Third      |'
     """
     if pad == -1:
-        pad = [0] * len(text_array)
+        pad = [0] * len(text_list)
     row = "|"
-    for column_number in range(len(text_array)):
+    for column_number in range(len(text_list)):
         padding = pad[column_number] + 1
-        row += (" " + esc_format(text_array[column_number])).ljust(padding) + " |"
+        row += (" " + esc_format(text_list[column_number])).ljust(padding) + " |"
     return row
 
 
@@ -279,9 +279,9 @@ def table_delimiter_row(number_of_columns):
     return table_row(["---" for column in range(number_of_columns)])
 
 
-def table(big_array):
-    """Return a formatted table, generated from arrays representing columns.
-    The function requires a 2-dimensional array, where each array is a column
+def table(table_list):
+    """Return a formatted table, generated from lists representing columns.
+    The function requires a 2-dimensional list, where each list is a column
     of the table. This will be used to generate a formatted table in string
     format. The number of items in each columns does not need to be consitent.
 
@@ -291,45 +291,45 @@ def table(big_array):
     >>> table([["Name", "Awes", "Bob"], ["User", "mub123", ""]])
     '| Name | User   |\\n| ---- | ------ |\\n| Awes | mub123 |\\n| Bob  |        |'
     """
-    number_of_columns = len(big_array)
-    number_of_rows_in_column = [len(column) for column in big_array]
-    string_array = [[str(cell) for cell in column] for column in big_array] # so cell can be int
-    max_cell_sizes = [len(max(column, key=len)) for column in string_array]
+    number_of_columns = len(table_list)
+    number_of_rows_in_column = [len(column) for column in table_list]
+    string_list = [[str(cell) for cell in column] for column in table_list] # so cell can be int
+    max_cell_sizes = [len(max(column, key=len)) for column in string_list]
     table = []
 
     # title row
-    row_array = [column[0] for column in string_array]
-    table.append(table_row(row_array, pad=max_cell_sizes))
+    row_list = [column[0] for column in string_list]
+    table.append(table_row(row_list, pad=max_cell_sizes))
 
     # delimiter row
-    row_array = []
+    row_list = []
     for column_number in range(number_of_columns):
         # for rows less than 3 in length
-        row_array.append("---" + "-" * (max_cell_sizes[column_number] - 3))
-    table.append(table_row(row_array, pad=max_cell_sizes))
+        row_list.append("---" + "-" * (max_cell_sizes[column_number] - 3))
+    table.append(table_row(row_list, pad=max_cell_sizes))
 
     # body rows
     for row in range(1, max(number_of_rows_in_column)):
-        row_array = []
+        row_list = []
         for column_number in range(number_of_columns):
             if number_of_rows_in_column[column_number] > row:
-                row_array.append(string_array[column_number][row])
+                row_list.append(string_list[column_number][row])
             else:
-                row_array.append("")
-        table.append(table_row(row_array, pad=max_cell_sizes))
+                row_list.append("")
+        table.append(table_row(row_list, pad=max_cell_sizes))
     return "\n".join(table)
 
 
-def table_from_rows(big_array):
+def table_from_rows(table_list):
     """
     >>> table_from_rows([["1","2","3"],["4","5","6"],["7","8","9"]])
     '| 1 | 2 | 3 |\\n| --- | --- | --- |\\n| 4 | 5 | 6 |\\n| 7 | 8 | 9 |'
     """
-    # transpose the array
-    number_of_rows = len(big_array)
+    # transpose the list
+    number_of_rows = len(table_list)
     transposed = []
     for column_number in range(0, number_of_rows):
-        column_list = [row[column_number] for row in big_array]
+        column_list = [row[column_number] for row in table_list]
         transposed.append(column_list)
 
     return table(transposed)
