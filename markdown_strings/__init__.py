@@ -285,15 +285,11 @@ def table(big_array):
     of the table. This will be used to generate a formatted table in string
     format. The number of items in each columns does not need to be consitent.
 
-    >>> table_from_columns([["Name", "Awes", "Bob"], ["User", "mub123", ""]])
-    '| Name    | User    |\\n| ------- | ------- |\\n| Awes | mum123 |\\n| Bob     |         |'
+    >>> table([["1","2","3"], ["4","5","6"], ["7","8","9"]])
+    '| 1 | 4 | 7 |\\n| --- | --- | --- |\\n| 2 | 5 | 8 |\\n| 3 | 6 | 9 |'
 
-    When displayed using `print`, this will appear as:
-
-    | Name    | User    |
-    | ------- | ------- |
-    | Awes    | mub123  |
-    | Bob     |         |
+    >>> table([["Name", "Awes", "Bob"], ["User", "mub123", ""]])
+    '| Name | User   |\\n| ---- | ------ |\\n| Awes | mub123 |\\n| Bob  |        |'
     """
     number_of_columns = len(big_array)
     number_of_rows_in_column = [len(column) for column in big_array]
@@ -308,8 +304,8 @@ def table(big_array):
     # delimiter row
     row_array = []
     for column_number in range(number_of_columns):
-        delimiter = "---" + "_" * (max_cell_sizes[column_number] - 3)
-        row_array.append(delimiter)
+        # for rows less than 3 in length
+        row_array.append("---" + "-" * (max_cell_sizes[column_number] - 3))
     table.append(table_row(row_array, pad=max_cell_sizes))
 
     # body rows
@@ -325,6 +321,10 @@ def table(big_array):
 
 
 def table_from_rows(big_array):
+    """
+    >>> table_from_rows([["1","2","3"],["4","5","6"],["7","8","9"]])
+    '| 1 | 2 | 3 |\\n| --- | --- | --- |\\n| 4 | 5 | 6 |\\n| 7 | 8 | 9 |'
+    """
     # transpose the array
     number_of_rows = len(big_array)
     transposed = []
