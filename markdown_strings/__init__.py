@@ -322,3 +322,14 @@ def table(big_array):
                 row_array.append("")
         table.append(table_row(row_array, pad=max_cell_sizes))
     return "\n".join(table)
+
+
+def table_from_rows(big_array):
+    # transpose the array
+    number_of_rows = len(big_array)
+    transposed = []
+    for column_number in range(0, number_of_rows):
+        column_list = [row[column_number] for row in big_array]
+        transposed.append(column_list)
+
+    return table(transposed)
