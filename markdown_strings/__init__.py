@@ -67,6 +67,7 @@ def header(heading_text, header_level, style="atx"):
     header_character = "=" if header_level == 1 else "-"
     return f"{esc_format(heading_text)}\n{header_character * 3}"
 
+
 def italics(text):
     """Return italics formatted text.
 
@@ -134,6 +135,7 @@ def link(text, link_url):
     '[This is a link](https://github.com/abactel/markdown_strings)'
     """
     return f"[{esc_format(text)}]({link_url})"
+
 
 def image(alt_text, link_url, title=""):
     """Return an inline image.
@@ -283,37 +285,40 @@ def table(big_array):
     of the table. This will be used to generate a formatted table in string
     format. The number of items in each columns does not need to be consitent.
 
-    >>> table([["Name", "abactel", "Bob"], ["User", "4b4c73l", ""]])
-    '| Name    | User    |\\n| ------- | ------- |\\n| abactel | 4b4c73l |\\n| Bob     |         |'
+    >>> table_from_columns([["Name", "Awes", "Bob"], ["User", "mub123", ""]])
+    '| Name    | User    |\\n| ------- | ------- |\\n| Awes | mum123 |\\n| Bob     |         |'
 
-    When displayed using `print`, this will appear:
-        | Name    | User    |
-        | ------- | ------- |
-        | abactel | 4b4c73l |
-        | Bob     |         |
+    When displayed using `print`, this will appear as:
+
+    | Name    | User    |
+    | ------- | ------- |
+    | Awes    | mub123  |
+    | Bob     |         |
     """
     number_of_columns = len(big_array)
     number_of_rows_in_column = [len(column) for column in big_array]
-    max_cell_size = [len(max(column, key=len)) for column in big_array]
+    string_array = [[str(cell) for cell in column] for column in big_array] # so cell can be int
+    max_cell_sizes = [len(max(column, key=len)) for column in string_array]
     table = []
 
     # title row
-    row_array = [column[0] for column in big_array]
-    table.append(table_row(row_array, pad=max_cell_size))
+    row_array = [column[0] for column in string_array]
+    table.append(table_row(row_array, pad=max_cell_sizes))
 
     # delimiter row
     row_array = []
     for column_number in range(number_of_columns):
-        row_array.append("-" * max_cell_size[column_number])
-    table.append(table_row(row_array, pad=max_cell_size))
+        delimiter = "---" + "_" * (max_cell_sizes[column_number] - 3)
+        row_array.append(delimiter)
+    table.append(table_row(row_array, pad=max_cell_sizes))
 
     # body rows
     for row in range(1, max(number_of_rows_in_column)):
         row_array = []
         for column_number in range(number_of_columns):
             if number_of_rows_in_column[column_number] > row:
-                row_array.append(big_array[column_number][row])
+                row_array.append(string_array[column_number][row])
             else:
-                row_array.append()
-        table.append(table_row(row_array, pad=max_cell_size))
+                row_array.append("")
+        table.append(table_row(row_array, pad=max_cell_sizes))
     return "\n".join(table)
