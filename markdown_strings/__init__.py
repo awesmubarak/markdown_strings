@@ -36,7 +36,7 @@ def esc_format(text):
 # Emphasis
 
 
-def header(heading_text, header_level, style="atx"):
+def header(header_text, header_level, style="atx"):
     """Return a header of specified level.
 
     Keyword arguments:
@@ -44,6 +44,8 @@ def header(heading_text, header_level, style="atx"):
             The "atx" style uses hash signs, and has 6 levels.
             The "setext" style uses dashes or equals signs for headers of
             levels 1 and 2 respectively, and is limited to those two levels.
+            The number of dashes or equals signs is either the length
+            of the text, or 3.
 
     Specifying a level outside of the style's range results in a ValueError.
 
@@ -52,20 +54,26 @@ def header(heading_text, header_level, style="atx"):
     >>> header("Smaller subtitle", 4)
     '#### Smaller subtitle'
     >>> header("Setext style", 2, style="setext")
-    'Setext style\\n---'
+    'Setext style\\n------------'
     """
+    # check types
     if not isinstance(header_level, int):
         raise TypeError("header_level must be int")
-    if style not in ["atx", "setext"]:
-        raise ValueError(f"Invalid style {style} (choose 'atx' or 'setext')")
+    if not isinstance(header_text, str):
+        raise TypeError("header_text must be str")
+    # specifics for each style
     if style == "atx":
         if not 1 <= header_level <= 6:
             raise ValueError(f"Invalid level {header_level} for atx")
-        return f"{'#' * header_level} {esc_format(heading_text)}"
-    if not 0 < header_level < 3:
-        raise ValueError(f"Invalid level {header_level} for setext")
-    header_character = "=" if header_level == 1 else "-"
-    return f"{esc_format(heading_text)}\n{header_character * 3}"
+        return f"{'#' * header_level} {esc_format(header_text)}"
+    elif style == "setext":
+        if not 0 < header_level < 3:
+            raise ValueError(f"Invalid level {header_level} for setext")
+        header_character = "=" if header_level == 1 else "-"
+        header_string = (header_character * 3) + header_character * (len(header_text) - 3)
+        return f"{esc_format(header_text)}\n{header_string}"
+    else:
+        raise ValueError(f"Invalid style {style} (choose 'atx' or 'setext')")
 
 
 def italics(text):

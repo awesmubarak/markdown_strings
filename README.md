@@ -18,7 +18,8 @@ Keyword arguments:
 -   style -- Specifies the header style (default atx). The "atx" style uses
     hash signs, and has 6 levels. The "setext" style uses dashes or equals
     signs for headers of levels 1 and 2 respectively, and is limited to
-    those two levels.
+    those two levels. The number of dashes or equals signs is either the length
+    of the text, or 3.
 
 Specifying a level outside of the style's range results in a ValueError.
 
