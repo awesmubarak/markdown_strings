@@ -7,6 +7,14 @@ of features with usage examples.
 Note: asterisk and underscores are escaped for all functions that do not format
 to code (`inline_code` and `code_block`).
 
+## Installation
+
+To install from pypi run
+
+```sh
+pip install markdown_strings
+```
+
 ## Standard markdown features
 
 ### Header
