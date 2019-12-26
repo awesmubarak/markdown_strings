@@ -131,8 +131,8 @@ def code_block(text, language=""):
 def link(text, link_url):
     """Return an inline link.
 
-    >>> link ("This is a link", "https://github.com/abactel/markdown_strings")
-    '[This is a link](https://github.com/abactel/markdown_strings)'
+    >>> link ("This is a link", "https://github.com/awesmubarak/markdown_strings")
+    '[This is a link](https://github.com/awesmubarak/markdown_strings)'
     """
     return f"[{esc_format(text)}]({link_url})"
 
@@ -143,10 +143,10 @@ def image(alt_text, link_url, title=""):
     Keyword arguments:
     title -- Specify the title of the image, as seen when hovering over it.
 
-    >>> image("This is an image", "https://tinyurl.com/bright-green-tree")
-    '![This is an image](https://tinyurl.com/bright-green-tree)'
-    >>> image("This is an image", "https://tinyurl.com/bright-green-tree", "tree")
-    '![This is an image](https://tinyurl.com/bright-green-tree) "tree"'
+    >>> image("This is an image", "https://avatars3.githubusercontent.com/u/24862378")
+    '![This is an image](https://avatars3.githubusercontent.com/u/24862378)'
+    >>> image("This is an image", "https://avatars3.githubusercontent.com/u/24862378", "awes")
+    '![This is an image](https://avatars3.githubusercontent.com/u/24862378) "awes"'
     """
     # image_string = "![" + esc_format(alt_text) + "](" + link_url + ")"
     image_string = f"![{esc_format(alt_text)}]({link_url})"
@@ -321,7 +321,9 @@ def table(table_list):
 
 
 def table_from_rows(table_list):
-    """
+    """Return a formatted table, using each list as the list. The specifics are
+    the same as those for the table function.
+
     >>> table_from_rows([["1","2","3"],["4","5","6"],["7","8","9"]])
     '| 1 | 2 | 3 |\\n| --- | --- | --- |\\n| 4 | 5 | 6 |\\n| 7 | 8 | 9 |'
     """
