@@ -10,7 +10,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as file:
 
 setup(
     name="markdown_strings",
-    version="3.2.1",
+    version="3.3.0",
     description="Create markdown formatted text",
     long_description=long_description,
     long_description_content_type='text/markdown',
