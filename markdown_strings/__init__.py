@@ -55,6 +55,27 @@ def header(header_text, header_level, style="atx"):
     '#### Smaller subtitle'
     >>> header("Setext style", 2, style="setext")
     'Setext style\\n------------'
+
+    >>> header("Title", "2")
+    Traceback (most recent call last):
+        ...
+    TypeError: header_level must be int
+    >>> header(23, 1)
+    Traceback (most recent call last):
+        ...
+    TypeError: header_text must be str
+    >>> header("Title", 100)
+    Traceback (most recent call last):
+        ...
+    ValueError: Invalid level 100 for atx
+    >>> header("Title", 3, style="setext")
+    Traceback (most recent call last):
+        ...
+    ValueError: Invalid level 3 for setext
+    >>> header("Title", 1, style="asfd")
+    Traceback (most recent call last):
+        ...
+    ValueError: Invalid style asfd (choose 'atx' or 'setext')
     """
     # check types
     if not isinstance(header_level, int):
@@ -156,7 +177,6 @@ def image(alt_text, link_url, title=""):
     >>> image("This is an image", "https://avatars3.githubusercontent.com/u/24862378", "awes")
     '![This is an image](https://avatars3.githubusercontent.com/u/24862378) "awes"'
     """
-    # image_string = "![" + esc_format(alt_text) + "](" + link_url + ")"
     image_string = f"![{esc_format(alt_text)}]({link_url})"
     if title:
         image_string += f' "{esc_format(title)}"'
@@ -216,11 +236,21 @@ def horizontal_rule(length=79, style="_"):
     '_______________________________________________________________________________'
     >>> horizontal_rule(length=5, style="*")
     '*****'
+
+    >>> horizontal_rule(style="=")
+    Traceback (most recent call last):
+        ...
+    ValueError: Invalid style (choose '_' or '*')
+    >>> horizontal_rule(length=2)
+    Traceback (most recent call last):
+        ...
+    ValueError: Length must be >= 3
+
     """
     if style not in ("_", "*"):
         raise ValueError("Invalid style (choose '_' or '*')")
     if length < 3:
-        raise ValueError("length must be >= 3")
+        raise ValueError("Length must be >= 3")
     return style * length
 
 
