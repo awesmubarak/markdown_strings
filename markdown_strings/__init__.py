@@ -309,12 +309,32 @@ def table_row(text_list, pad=-1):
     return row
 
 
-def table_delimiter_row(number_of_columns):
+def table_delimiter_row(number_of_columns, column_lengths=-1):
     """Return a delimiter row for use in a table.
+    Keyword arguments:
+    column_lengths -- An iterable that specifies the length of each column.
+
     >>> table_delimiter_row(3)
     '| --- | --- | --- |'
+    >>> table_delimiter_row(3, column_lengths=[4,5,6])
+    '| ---- | ----- | ------ |'
+
+    >>> table_delimiter_row(3, column_lengths=[1,2])
+    Traceback (most recent call last):
+        ...
+    ValueError: number_of_columns must be the number of columns in column_lengths
     """
-    return table_row(["---" for column in range(number_of_columns)])
+    if column_lengths == -1:
+        column_lengths = [0] * number_of_columns
+    # error checking
+    if number_of_columns != len(column_lengths):
+        raise ValueError("number_of_columns must be the number of columns in column_lengths")
+    # creating the list with the right number of dashes
+    delimiter_row = []
+    for column_number in range(0, number_of_columns):
+        delimiter_row.append("---" + "-" * (column_lengths[column_number] - 3))
+    # use table row for acctually creating the table row
+    return table_row(delimiter_row)
 
 
 def table(table_list):
@@ -332,19 +352,15 @@ def table(table_list):
     number_of_columns = len(table_list)
     number_of_rows_in_column = [len(column) for column in table_list]
     string_list = [[str(cell) for cell in column] for column in table_list] # so cell can be int
-    max_cell_sizes = [len(max(column, key=len)) for column in string_list]
+    column_lengths = [len(max(column, key=len)) for column in string_list]
     table = []
 
     # title row
     row_list = [column[0] for column in string_list]
-    table.append(table_row(row_list, pad=max_cell_sizes))
+    table.append(table_row(row_list, pad=column_lengths))
 
     # delimiter row
-    row_list = []
-    for column_number in range(number_of_columns):
-        # for rows less than 3 in length
-        row_list.append("---" + "-" * (max_cell_sizes[column_number] - 3))
-    table.append(table_row(row_list, pad=max_cell_sizes))
+    table.append(table_delimiter_row(len(column_lengths), column_lengths=column_lengths))
 
     # body rows
     for row in range(1, max(number_of_rows_in_column)):
@@ -354,7 +370,7 @@ def table(table_list):
                 row_list.append(string_list[column_number][row])
             else:
                 row_list.append("")
-        table.append(table_row(row_list, pad=max_cell_sizes))
+        table.append(table_row(row_list, pad=column_lengths))
     return "\n".join(table)
 
 

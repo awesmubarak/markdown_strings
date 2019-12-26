@@ -203,9 +203,15 @@ Keyword arguments:
 
 Return a delimiter row for use in a table.
 
+Keyword arguments:
+
+-   column_lengths -- An iterable that specifies the length of each column.
+
 ```python
 >>> table_delimiter_row(3)
 '| --- | --- | --- |'
+>>> table_delimiter_row(3, column_lengths=[4,5,6])
+'| ---- | ----- | ------ |'
 ```
 
 ### Table

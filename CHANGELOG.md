@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+
+-   The keyword argument `column_lengths` for `table_delimiter_row` allows the
+    length of each column to be specified.
+
 ## [3.2.0] - 2019-12-26
 
 ### Added
