@@ -12,24 +12,31 @@ markdown see:
 # Helper functions
 
 
-def esc_format(text):
+def esc_format(text, esc):
     """Return text with formatting escaped.
 
     Markdown requires a backslash before literal underscores, asterisks, or
     backticks, to avoid formatting to bold, italics, or monospace.
 
-    >>> esc_format("Normal text")
+    >>> esc_format("Normal text", esc=True)
     'Normal text'
-    >>> esc_format("Text with **bold**") == r'Text with \\*\\*bold\\*\\*'
+    >>> esc_format("Text with **bold**", esc=True) == r'Text with \\*\\*bold\\*\\*'
     True
-    >>> esc_format("Text with _italics_") == r'Text with \\_italics\\_'
+    >>> esc_format("Text with _italics_", esc=True) == r'Text with \\_italics\\_'
     True
-    >>> esc_format("Text with _**complicated** format_") == r'Text with \\_\\*\\*complicated\\*\\* format\\_'
+    >>> esc_format("Text with _**complicated** format_", esc=True) == r'Text with \\_\\*\\*complicated\\*\\* format\\_'
     True
     >>> esc_format("Text with `monospace`") == r'Text with \\`monospace\\`'
     True
     """
+<<<<<<< HEAD
+    if esc:
+        return str(text).replace("_", r"\_").replace("*", r"\*")
+    else:
+        return text
+=======
     return str(text).replace("_", r"\_").replace("*", r"\*").replace("`", r"\`")
+>>>>>>> 6658ef3d7b9bc86fd705d416c0352b945e06bbe3
 
 
 # Standard markdown
@@ -38,7 +45,7 @@ def esc_format(text):
 # Emphasis
 
 
-def header(header_text, header_level, style="atx"):
+def header(header_text, header_level, style="atx", esc=True):
     """Return a header of specified level.
 
     Keyword arguments:
@@ -88,18 +95,18 @@ def header(header_text, header_level, style="atx"):
     if style == "atx":
         if not 1 <= header_level <= 6:
             raise ValueError(f"Invalid level {header_level} for atx")
-        return f"{'#' * header_level} {esc_format(header_text)}"
+        return f"{'#' * header_level} {esc_format(header_text, esc)}"
     elif style == "setext":
         if not 0 < header_level < 3:
             raise ValueError(f"Invalid level {header_level} for setext")
         header_character = "=" if header_level == 1 else "-"
         header_string = (header_character * 3) + header_character * (len(header_text) - 3)
-        return f"{esc_format(header_text)}\n{header_string}"
+        return f"{esc_format(header_text, esc)}\n{header_string}"
     else:
         raise ValueError(f"Invalid style {style} (choose 'atx' or 'setext')")
 
 
-def italics(text):
+def italics(text, esc=True):
     """Return italics formatted text.
 
     >>> italics("This text is italics") == '_This text is italics_'
@@ -107,10 +114,10 @@ def italics(text):
     >>> italics("A wild _underscore_ appears") == r'_A wild \\_underscore\\_ appears_'
     True
     """
-    return f"_{esc_format(text)}_"
+    return f"_{esc_format(text, esc)}_"
 
 
-def bold(text):
+def bold(text, esc=True):
     """Return bold formatted text.
 
     >>> bold("This text is bold")
@@ -118,7 +125,7 @@ def bold(text):
     >>> bold("Oh look, **stars** everywhere") == r'**Oh look, \\*\\*stars\\*\\* everywhere**'
     True
     """
-    return f"**{esc_format(text)}**"
+    return f"**{esc_format(text, esc)}**"
 
 
 # Code formatting
@@ -159,16 +166,16 @@ def code_block(text, language=""):
 # Links
 
 
-def link(text, link_url):
+def link(text, link_url, esc=True):
     """Return an inline link.
 
     >>> link ("This is a link", "https://github.com/awesmubarak/markdown_strings")
     '[This is a link](https://github.com/awesmubarak/markdown_strings)'
     """
-    return f"[{esc_format(text)}]({link_url})"
+    return f"[{esc_format(text, esc)}]({link_url})"
 
 
-def image(alt_text, link_url, title=""):
+def image(alt_text, link_url, title="", esc=True):
     """Return an inline image.
 
     Keyword arguments:
@@ -179,16 +186,16 @@ def image(alt_text, link_url, title=""):
     >>> image("This is an image", "https://avatars3.githubusercontent.com/u/24862378", "awes")
     '![This is an image](https://avatars3.githubusercontent.com/u/24862378) "awes"'
     """
-    image_string = f"![{esc_format(alt_text)}]({link_url})"
+    image_string = f"![{esc_format(alt_text, esc)}]({link_url})"
     if title:
-        image_string += f' "{esc_format(title)}"'
+        image_string += f' "{esc_format(title, esc)}"'
     return image_string
 
 
 # Lists
 
 
-def unordered_list(text_list):
+def unordered_list(text_list, esc=True):
     """Return an unordered list from an list.
 
     >>> unordered_list(["first", "second", "third", "fourth"])
@@ -196,10 +203,10 @@ def unordered_list(text_list):
     >>> unordered_list([1, 2, 3, 4, 5])
     '-   1\\n-   2\\n-   3\\n-   4\\n-   5'
     """
-    return "\n".join([f"-   {esc_format(item)}" for item in text_list])
+    return "\n".join([f"-   {esc_format(item, esc)}" for item in text_list])
 
 
-def ordered_list(text_list):
+def ordered_list(text_list, esc=True):
     """Return an ordered list from an list.
 
     >>> ordered_list(["first", "second", "third", "fourth"])
@@ -208,7 +215,7 @@ def ordered_list(text_list):
     ordered_list = []
     for number, item in enumerate(text_list):
         ordered_list.append(
-            f"{(f'{esc_format(number + 1)}.').ljust(3)} {esc_format(item)}"
+            f"{(f'{esc_format(number + 1, esc)}.').ljust(3)} {esc_format(item, esc)}"
         )
     return "\n".join(ordered_list)
 
@@ -216,13 +223,13 @@ def ordered_list(text_list):
 # Miscellaneous
 
 
-def blockquote(text):
+def blockquote(text, esc=True):
     """Return a blockquote.
 
     >>> blockquote("A simple blockquote")
     '> A simple blockquote'
     """
-    return "\n".join([f"> {esc_format(item)}" for item in text.split("\n")])
+    return "\n".join([f"> {esc_format(item, esc)}" for item in text.split("\n")])
 
 
 def horizontal_rule(length=79, style="_"):
@@ -259,16 +266,16 @@ def horizontal_rule(length=79, style="_"):
 # Non-standard markdown
 
 
-def strikethrough(text):
+def strikethrough(text, esc=True):
     """Return text with strike-through formatting.
 
     >>> strikethrough("This is a lie")
     '~This is a lie~'
     """
-    return f"~{esc_format(text)}~"
+    return f"~{esc_format(text, esc)}~"
 
 
-def task_list(task_list):
+def task_list(task_list, esc=True):
     """Return a task list.
 
     The task_list should be 2-dimensional; the first item should be the task
@@ -284,14 +291,14 @@ def task_list(task_list):
     """
     tasks = []
     for item, completed in task_list:
-        tasks.append(f"- [{'X' if completed else ' '}] {esc_format(item)}")
+        tasks.append(f"- [{'X' if completed else ' '}] {esc_format(item, esc)}")
     return "\n".join(tasks)
 
 
 # Tables
 
 
-def table_row(text_list, pad=-1):
+def table_row(text_list, pad=-1, esc=True):
     """Return a single table row.
     Keyword arguments:
     pad -- The pad should be an list of the same size as the input text list.æ
@@ -307,7 +314,7 @@ def table_row(text_list, pad=-1):
     row = "|"
     for column_number in range(len(text_list)):
         padding = pad[column_number] + 1
-        row += (" " + esc_format(text_list[column_number])).ljust(padding) + " |"
+        row += (" " + esc_format(text_list[column_number], esc)).ljust(padding) + " |"
     return row
 
 
