@@ -15,8 +15,8 @@ markdown see:
 def esc_format(text):
     """Return text with formatting escaped.
 
-    Markdown requires a backslash before literal underscores or asterisk, to
-    avoid formatting to bold or italics.
+    Markdown requires a backslash before literal underscores, asterisks, or
+    backticks, to avoid formatting to bold, italics, or monospace.
 
     >>> esc_format("Normal text")
     'Normal text'
@@ -26,8 +26,10 @@ def esc_format(text):
     True
     >>> esc_format("Text with _**complicated** format_") == r'Text with \\_\\*\\*complicated\\*\\* format\\_'
     True
+    >>> esc_format("Text with `monospace`") == r'Text with \\`monospace\\`'
+    True
     """
-    return str(text).replace("_", r"\_").replace("*", r"\*")
+    return str(text).replace("_", r"\_").replace("*", r"\*").replace("`", r"\`")
 
 
 # Standard markdown
