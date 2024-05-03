@@ -9,17 +9,18 @@ markdown see:
 
 """
 
-# TODO: why using doctest?
-
 # Helper functions
 
 
 def esc_format(text, esc):
-    # TODO: why did I add the esc thing???
     """Return text with formatting escaped.
 
     Markdown requires a backslash before literal underscores, asterisks, or
     backticks, to avoid formatting to bold, italics, or monospace.
+
+    Keyword arguments:
+        esc -- Specifies if text should be escaped or not. This exists incase input text
+            should not be escaped
 
     >>> esc_format("Normal text", esc=True)
     'Normal text'
