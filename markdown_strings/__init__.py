@@ -29,14 +29,10 @@ def esc_format(text, esc):
     >>> esc_format("Text with `monospace`") == r'Text with \\`monospace\\`'
     True
     """
-<<<<<<< HEAD
     if esc:
-        return str(text).replace("_", r"\_").replace("*", r"\*")
+        return str(text).replace("_", r"\_").replace("*", r"\*").replace("`", r"\`")
     else:
         return text
-=======
-    return str(text).replace("_", r"\_").replace("*", r"\*").replace("`", r"\`")
->>>>>>> 6658ef3d7b9bc86fd705d416c0352b945e06bbe3
 
 
 # Standard markdown
@@ -100,7 +96,9 @@ def header(header_text, header_level, style="atx", esc=True):
         if not 0 < header_level < 3:
             raise ValueError(f"Invalid level {header_level} for setext")
         header_character = "=" if header_level == 1 else "-"
-        header_string = (header_character * 3) + header_character * (len(header_text) - 3)
+        header_string = (header_character * 3) + header_character * (
+            len(header_text) - 3
+        )
         return f"{esc_format(header_text, esc)}\n{header_string}"
     else:
         raise ValueError(f"Invalid style {style} (choose 'atx' or 'setext')")
@@ -337,7 +335,9 @@ def table_delimiter_row(number_of_columns, column_lengths=-1):
         column_lengths = [0] * number_of_columns
     # error checking
     if number_of_columns != len(column_lengths):
-        raise ValueError("number_of_columns must be the number of columns in column_lengths")
+        raise ValueError(
+            "number_of_columns must be the number of columns in column_lengths"
+        )
     # creating the list with the right number of dashes
     delimiter_row = []
     for column_number in range(0, number_of_columns):
@@ -360,7 +360,9 @@ def table(table_list):
     """
     number_of_columns = len(table_list)
     number_of_rows_in_column = [len(column) for column in table_list]
-    string_list = [[str(cell) for cell in column] for column in table_list] # so cell can be int
+    string_list = [
+        [str(cell) for cell in column] for column in table_list
+    ]  # so cell can be int
     column_lengths = [len(max(column, key=len)) for column in string_list]
     table = []
 
@@ -369,7 +371,9 @@ def table(table_list):
     table.append(table_row(row_list, pad=column_lengths))
 
     # delimiter row
-    table.append(table_delimiter_row(len(column_lengths), column_lengths=column_lengths))
+    table.append(
+        table_delimiter_row(len(column_lengths), column_lengths=column_lengths)
+    )
 
     # body rows
     for row in range(1, max(number_of_rows_in_column)):
