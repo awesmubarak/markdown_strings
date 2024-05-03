@@ -15,6 +15,12 @@ To install from pypi run
 pip install markdown_strings
 ```
 
+## Character escaping
+
+Every standard function includes an optional keyword argument `esc`, set to
+`True` by default. This parameter determines whether to escape characters in
+the input text, thereby preventing them from triggering markdown formatting.
+
 ## Standard markdown features
 
 ### Header
@@ -254,13 +260,17 @@ Return text with formatting escaped
 Markdown requires a backslash before literal underscores or asterisk, to avoid
 formatting to bold or italics.
 
+Keyword arguments:
+
+-   esc -- Specifies if text should be escaped or not. This exists incase input text
+    should not be escaped
 ```python
->>> esc_format("Normal text")
+>>> esc_format("Normal text", esc=True)
 'Normal text'
->>> esc_format("Text with **bold**")
-'Text with \*\*bold\*\*'
->>> esc_format("Text with _italics_")
-'Text with \_italics\_'
->>> esc_format("Text with _**complicated** formatting_")
-'Text with \_\*\*complicated\*\* formatting\_'
+>>> esc_format("Text with **bold**", esc=True) == r'Text with \\*\\*bold\\*\\*'
+True
+>>> esc_format("Text with _italics_", esc=True) == r'Text with \\_italics\\_'
+True
+>>> esc_format("Text with _**complicated** format_", esc=True) == r'Text with \\_\\*\\*complicated\\*\\* format\\_'
+True
 ```
