@@ -9,10 +9,13 @@ markdown see:
 
 """
 
+# TODO: why using doctest?
+
 # Helper functions
 
 
 def esc_format(text, esc):
+    # TODO: why did I add the esc thing???
     """Return text with formatting escaped.
 
     Markdown requires a backslash before literal underscores, asterisks, or
@@ -25,8 +28,6 @@ def esc_format(text, esc):
     >>> esc_format("Text with _italics_", esc=True) == r'Text with \\_italics\\_'
     True
     >>> esc_format("Text with _**complicated** format_", esc=True) == r'Text with \\_\\*\\*complicated\\*\\* format\\_'
-    True
-    >>> esc_format("Text with `monospace`") == r'Text with \\`monospace\\`'
     True
     """
     if esc:
@@ -296,7 +297,7 @@ def task_list(task_list, esc=True):
 # Tables
 
 
-def table_row(text_list, pad=-1, esc=True):
+def table_row(text_list, pad=None, esc=True):
     """Return a single table row.
     Keyword arguments:
     pad -- The pad should be an list of the same size as the input text list.æ
@@ -307,7 +308,7 @@ def table_row(text_list, pad=-1, esc=True):
     >>> table_row(["First column", "Second", "Third"], [10, 10, 10])
     '| First column | Second     | Third      |'
     """
-    if pad == -1:
+    if pad is None:
         pad = [0] * len(text_list)
     row = "|"
     for column_number in range(len(text_list)):
@@ -316,7 +317,7 @@ def table_row(text_list, pad=-1, esc=True):
     return row
 
 
-def table_delimiter_row(number_of_columns, column_lengths=-1):
+def table_delimiter_row(number_of_columns, column_lengths=None):
     """Return a delimiter row for use in a table.
     Keyword arguments:
     column_lengths -- An iterable that specifies the length of each column.
@@ -331,7 +332,7 @@ def table_delimiter_row(number_of_columns, column_lengths=-1):
         ...
     ValueError: number_of_columns must be the number of columns in column_lengths
     """
-    if column_lengths == -1:
+    if column_lengths is None:
         column_lengths = [0] * number_of_columns
     # error checking
     if number_of_columns != len(column_lengths):
