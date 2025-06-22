@@ -1,4 +1,3 @@
-
 """Core module for a type-safe GitHub-Flavoured Markdown (GFM) generator.
 
 This module implements the full public API described in the design
@@ -16,6 +15,11 @@ __all__ = [
     "is_safe_mode",
     # Core data structure
     "MarkdownNode",
+    # Exceptions
+    "MarkdownError",
+    "InvalidNestingError",
+    "ValidationError",
+    "SafeModeError",
     # Inline nodes
     "bold",
     "italic",
@@ -840,7 +844,7 @@ def table(
         if not cell_escaped:
             escaped_flag = False
 
-    header_line = " | ".join(header_cells)
+    header_line = " | ".join(header_cells) if num_cols > 1 else (header_cells[0] or " ")
 
     # Alignment row
     if alignment is None:
@@ -862,7 +866,8 @@ def table(
             row_cells.append(text)
             if not cell_escaped:
                 escaped_flag = False
-        row_lines.append(" | ".join(row_cells))
+        line = " | ".join(row_cells) if num_cols > 1 else (row_cells[0] or " ")
+        row_lines.append(line)
 
     rendered = " | ".join(header_cells)
     lines = [header_line, align_row, *row_lines]
