@@ -40,7 +40,7 @@ Repository = "https://github.com/awesmubarak/markdown_strings"
 Issues = "https://github.com/awesmubarak/markdown_strings/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/markdown_gen"]
+packages = ["src/markdown_strings"]
 
 [tool.ruff]
 target-version = "py38"
@@ -86,7 +86,14 @@ python_functions = ["test_*"]
 addopts = [
     "--strict-markers",
     "--strict-config",
-    "--cov=src/markdown_gen",
+    "--cov=src/markdown_strings",
     "--cov-report=term-missing",
     "--cov-report=html",
 ] 
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.113.0",
+    "pytest>=8.3.5",
+    "pytest-cov>=5.0.0",
+]
