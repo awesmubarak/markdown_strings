@@ -91,6 +91,44 @@ This is a paragraph containing **bold text** and *italic text*.
 print('Hello, World!')
 ```
 
+Here's an example showing type-safe markdown generation from dynamic data:
+
+```python
+import markdown_strings as md
+
+# Simulate API data (could be from any source)
+pull_requests = [
+    {"id": 101, "title": "Fix critical bug in <script>alert('xss')</script>", "author": "alice"},
+    {"id": 102, "title": "Add **bold** formatting support", "author": "bob"},
+    {"id": 103, "title": "Update README.md documentation", "author": "charlie"},
+]
+
+# Generate safe, structured markdown - all user content is automatically escaped
+report = md.document([
+    md.h1("🚀 Pull Request Report"),
+    md.paragraph([
+        "Generated on ", md.code("2025-06-28"), " for repository ", 
+        md.bold("awesome-project/widget-factory"), "."
+    ]),
+    md.h2("Open Pull Requests"),
+    md.bullet_list([
+        [
+            md.link(f"PR #{pr['id']}: {pr['title']}", f"https://github.com/repo/pull/{pr['id']}"),
+            md.paragraph(f"Author: {md.italic(pr['author'])}")
+        ]
+        for pr in pull_requests
+    ]),
+    md.blockquote("All titles are automatically escaped for security! 🔒"),
+])
+
+print(report.text)
+```
+
+This produces safe, well-structured markdown where:
+- **All user content is escaped** (notice the `<script>` tag becomes harmless text)
+- **Complex nesting** works intuitively (links in lists, formatted text in paragraphs) 
+- **Type safety** prevents invalid combinations at the API level
+
 ## Available Functions
 
 This library provides a comprehensive set of functions for generating various Markdown elements.
