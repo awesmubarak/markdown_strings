@@ -1,7 +1,7 @@
-"""A Python package for generating GitHub-Flavoured Markdown content."""
+"""A type-safe Python package for generating Markdown."""
 
 # Package metadata
-__version__ = "4.0.0"
+__version__ = "4.0.0a1"
 __author__ = "Awes Mubarak"
 __email__ = "contact@awesmubarak.com"
 

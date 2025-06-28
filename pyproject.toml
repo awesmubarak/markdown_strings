@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "markdown_strings"
-version = "4.0.0"
-description = "A Python package for generating markdown content" # TODO
+version = "4.0.0a1"
+description = "A type-safe Python package for generating Markdown"
 readme = "README.md"
 license = {text = "MIT"}
 authors = [

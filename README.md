@@ -1,6 +1,6 @@
 # Markdown Strings (ALPHA)
 
-A Python package for generating GitHub-Flavoured Markdown in a type-safe way.
+A type-safe Python package for generating Markdown.
 
 This library provides a set of functions to build complex Markdown documents programmatically, with a focus on correctness and security. It ensures that all generated content is properly escaped, preventing common rendering issues and potential injection vulnerabilities.
 
@@ -15,14 +15,15 @@ This library provides a set of functions to build complex Markdown documents pro
   - [Container Elements](#container-elements)
   - [Special Elements](#special-elements)
 - [Composition](#composition)
+- [Escaping and Safety](#escaping-and-safety)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Key Features
 
 - **Type-Safe by Design**: The API is designed to prevent incorrect nesting of Markdown elements (e.g., block elements inside inline elements).
-- **Automatic Escaping**: All string content is automatically escaped by default to ensure it renders as plain text.
-- **Safe Mode**: An optional "safe mode" can be enabled to reject any unescaped content, providing an extra layer of security.
+- **Secure by Default**: All string content is automatically escaped by default, preventing unintended Markdown interpretation and potential security vulnerabilities.
+- **Safe Mode Protection**: An optional "safe mode" can be enabled to completely reject any unescaped content, ideal for applications handling untrusted input.
 - **Comprehensive Markdown Support**: Supports a wide range of Markdown features, including headings, lists, tables, code blocks, and more.
 - **Immutable Data Structures**: The core `MarkdownNode` is immutable, allowing for safe composition of Markdown fragments.
 
@@ -162,6 +163,75 @@ This produces:
 ```
 
 The exact rules for which elements can be nested inside others are still being finalised. As this is an alpha version, we encourage you to use your best judgment and experiment. The library will raise an `InvalidNestingError` if you attempt an invalid combination. Full documentation on composition rules will be available in a future release.
+
+## Escaping and Safety
+
+By default, `markdown_strings` automatically escapes all string content to ensure it renders as plain text, preventing unintended Markdown interpretation and potential security issues.
+
+### Automatic Escaping
+
+When you pass regular strings to any function, special Markdown characters are automatically escaped (taking into account the specific feature you're using):
+
+```python
+import markdown_strings as md
+
+# These strings contain Markdown syntax, but will be escaped
+text_with_markdown = "# This looks like a header\n* And this like a list"
+result = md.paragraph(text_with_markdown)
+print(result)
+```
+
+Output:
+```markdown
+\# This looks like a header
+\* And this like a list
+```
+
+### Disabling Escaping
+
+If you need to include raw Markdown content, you can disable escaping using the `escape=False` parameter available on most functions:
+
+```python
+import markdown_strings as md
+
+# This will NOT be escaped - use with caution!
+raw_markdown = "**This will be bold** and *this italic*"
+result = md.paragraph(raw_markdown, escape=False)
+print(result)
+```
+
+Output:
+```markdown
+**This will be bold** and *this italic*
+```
+
+**⚠️ Warning**: Only use `escape=False` with trusted content. Unescaped user input could potentially break your document structure.
+
+### Safe Mode
+
+For applications that handle untrusted input, you can enable "safe mode" to completely prevent unescaped content:
+
+```python
+import markdown_strings as md
+
+# Enable safe mode globally
+md.set_safe_mode(True)
+
+# This will now raise an exception
+try:
+    result = md.paragraph("Some text", escape=False)
+except md.SafeModeError as e:
+    print(f"Safety violation: {e}")
+
+# Check if safe mode is enabled
+if md.is_safe_mode():
+    print("Safe mode is active")
+
+# Disable safe mode
+md.set_safe_mode(False)
+```
+
+Safe mode is particularly useful in web applications, documentation generators, or any system that processes user-generated content.
 
 ## Contributing
 
