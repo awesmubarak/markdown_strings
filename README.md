@@ -167,6 +167,36 @@ The exact rules for which elements can be nested inside others are still being f
 
 Contributions are welcome! Please feel free to open an issue or submit a pull request.
 
+### Development Setup
+
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management. To get started:
+
+```bash
+# Clone the repository
+git clone https://github.com/awesmubarak/markdown_strings
+cd markdown_strings
+
+# Install dependencies
+uv sync --group dev
+```
+
+### Code Quality
+
+Before submitting a pull request, please ensure your code passes all quality checks by running these commands:
+
+```bash
+# Check code formatting and style
+uv run ruff check .
+
+# Type checking
+uv run mypy src/
+
+# Run tests
+uv run pytest
+```
+
+All three commands should pass without errors before submitting your contribution.
+
 ## License
 
 This project is licensed under the MIT License.

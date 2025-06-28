@@ -7,7 +7,17 @@ underscore) unless it forms part of the documented API surface.
 
 import re
 from dataclasses import dataclass
-from typing import Iterable, List, Sequence, Union
+from typing import (
+    Callable,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Set,
+    Tuple,
+    Union,
+)
 
 __all__ = [
     # Global helpers
@@ -60,14 +70,14 @@ __all__ = [
 
 class MarkdownString(str):
     """A string that carries escape information for markdown content."""
-    
+
     escaped: bool
-    
-    def __new__(cls, value: str, escaped: bool = True):
+
+    def __new__(cls, value: str, escaped: bool = True) -> "MarkdownString":
         instance = str.__new__(cls, value)
-        instance.escaped = escaped  # type: ignore[misc]
+        instance.escaped = escaped
         return instance
-    
+
     def __repr__(self) -> str:  # pragma: no cover – cosmetic only
         return f"MarkdownString({str.__repr__(self)}, escaped={self.escaped})"
 
@@ -154,7 +164,7 @@ class SafeModeError(MarkdownError):
 
 
 # Mapping of node name -> *allowed child node names*
-_ALLOWED_CHILDREN: dict[str, set[str]] = {}
+_ALLOWED_CHILDREN: Dict[str, Set[str]] = {}
 
 # ---------------------------------------------------------------------------
 # Inline – single line span elements
@@ -191,7 +201,7 @@ def _normalize_content(content: Union[str, "MarkdownNode", Sequence[Union[str, "
         return [content]
 
     # Iterables (but **not** strings) – create list copy so we can iterate
-    if isinstance(content, Iterable):  # type: ignore[arg-type]
+    if isinstance(content, Iterable):
         return list(content)  # shallow copy OK (elements are immutable)
 
     raise TypeError(f"Invalid content type: {type(content).__name__}")
@@ -247,7 +257,7 @@ def _escape_leading_patterns(line: str) -> str:
     return line
 
 
-def escape_text(text: str, *, context: str | None = None) -> str:
+def escape_text(text: str, *, context: Optional[str] = None) -> str:
     """Escape *text* according to the specified *context*.
 
     Parameters
@@ -305,7 +315,7 @@ ITALIC_ACCEPTS = {
     "link",
     "italic",
 }
-CODE_ACCEPTS: set[str] = set()  # strings only
+CODE_ACCEPTS: Set[str] = set()  # strings only
 STRIKE_ACCEPTS = {
     "text",
     "bold",
@@ -352,9 +362,9 @@ def _build_inline(
     delimiter_right: str,
     content: Union[str, MarkdownNode, Sequence[Union[str, MarkdownNode]], None],
     *,
-    accepts: set[str],
+    accepts: Set[str],
     escape: bool = True,
-    process_item=lambda x: x,  # Identity by default. Override for special cases
+    process_item: Callable[[str], str] = lambda x: x,  # Identity by default. Override for special cases
 ) -> MarkdownNode:
     """Shared logic for inline nodes such as *bold* and *italic*."""
 
@@ -364,7 +374,7 @@ def _build_inline(
     items = _normalize_content(content)
 
     escaped_flag = escape
-    parts: list[str] = []
+    parts: List[str] = []
 
     for item in items:
         if isinstance(item, MarkdownString):
@@ -425,7 +435,7 @@ def _code_fence_for(text: str) -> str:
     return "`" * (longest + 1 or 1)
 
 
-def code(content: str, *, escape: bool = True) -> MarkdownNode:  # type: ignore[override]
+def code(content: str, *, escape: bool = True) -> MarkdownNode:
     """Return inline ``code`` markdown.
 
     *content* **must** be a string per spec; embedding nodes inside inline code
@@ -587,27 +597,27 @@ def heading(level: int, content: Union[str, MarkdownNode, Sequence[Union[str, Ma
 
 # Convenience wrappers.
 
-def h1(content, *, escape: bool = True):  # noqa: D401 – no return type for brevity
+def h1(content: Union[str, MarkdownNode, Sequence[Union[str, MarkdownNode]], None], *, escape: bool = True) -> MarkdownNode:
     """Return a level-1 heading."""
     return heading(1, content, escape=escape)
 
-def h2(content, *, escape: bool = True):
+def h2(content: Union[str, MarkdownNode, Sequence[Union[str, MarkdownNode]], None], *, escape: bool = True) -> MarkdownNode:
     """Return a level-2 heading."""
     return heading(2, content, escape=escape)
 
-def h3(content, *, escape: bool = True):
+def h3(content: Union[str, MarkdownNode, Sequence[Union[str, MarkdownNode]], None], *, escape: bool = True) -> MarkdownNode:
     """Return a level-3 heading."""
     return heading(3, content, escape=escape)
 
-def h4(content, *, escape: bool = True):
+def h4(content: Union[str, MarkdownNode, Sequence[Union[str, MarkdownNode]], None], *, escape: bool = True) -> MarkdownNode:
     """Return a level-4 heading."""
     return heading(4, content, escape=escape)
 
-def h5(content, *, escape: bool = True):
+def h5(content: Union[str, MarkdownNode, Sequence[Union[str, MarkdownNode]], None], *, escape: bool = True) -> MarkdownNode:
     """Return a level-5 heading."""
     return heading(5, content, escape=escape)
 
-def h6(content, *, escape: bool = True):
+def h6(content: Union[str, MarkdownNode, Sequence[Union[str, MarkdownNode]], None], *, escape: bool = True) -> MarkdownNode:
     """Return a level-6 heading."""
     return heading(6, content, escape=escape)
 
@@ -645,7 +655,7 @@ def _code_block_fence_for(text: str) -> str:
     return "`" * max(3, longest + 1)
 
 
-def code_block(content: str, *, language: str | None = None, escape: bool = True) -> MarkdownNode:
+def code_block(content: str, *, language: Optional[str] = None, escape: bool = True) -> MarkdownNode:
     """Return fenced code block (```lang\n…\n```)."""
 
     if not isinstance(content, str):
@@ -689,7 +699,7 @@ def document(children: Sequence[MarkdownNode]) -> MarkdownNode:
     if not isinstance(children, Sequence):
         raise TypeError("document() expects a sequence of MarkdownNode children")
 
-    parts: list[str] = []
+    parts: List[str] = []
     escaped_flag = True
 
     for child in children:
@@ -714,12 +724,12 @@ def _render_list_items(
     ordered: bool = False,
     start: int = 1,
     checklist: bool = False,
-    checked_pattern: Sequence[bool] | None = None,
+    checked_pattern: Optional[Sequence[bool]] = None,
     escape: bool = True,
-) -> tuple[str, bool]:
+) -> Tuple[str, bool]:
     """Recursive helper that renders nested lists and returns (text, escaped)."""
 
-    parts: list[str] = []
+    parts: List[str] = []
     idx = start
     escaped_flag = escape
 
@@ -794,7 +804,7 @@ def ordered_list(
 def checklist(
     items: Sequence[Union[str, MarkdownNode]],
     *,
-    checked: Sequence[bool] | None = None,
+    checked: Optional[Sequence[bool]] = None,
     escape: bool = True,
 ) -> MarkdownNode:
     """Return GFM task list (checklist)."""
@@ -822,7 +832,7 @@ def horizontal_rule() -> MarkdownNode:
 # ---------------------------------------------------------------------------
 
 
-def validate_alignment(alignment: Sequence[str] | None, columns: int) -> None:
+def validate_alignment(alignment: Optional[Sequence[str]], columns: int) -> None:
     if alignment is None:
         return
     if len(alignment) != columns:
@@ -833,7 +843,7 @@ def validate_alignment(alignment: Sequence[str] | None, columns: int) -> None:
             raise ValidationError(f"Invalid alignment value '{a}' – must be left|center|right")
 
 
-def _render_table_cell(item: Union[str, MarkdownNode], *, escape: bool) -> tuple[str, bool]:
+def _render_table_cell(item: Union[str, MarkdownNode], *, escape: bool) -> Tuple[str, bool]:
     if isinstance(item, str):
         text = escape_text(item, context="table_cell") if escape else item
         return text, escape
@@ -846,7 +856,7 @@ def table(
     headers: Sequence[Union[str, MarkdownNode]],
     rows: Sequence[Sequence[Union[str, MarkdownNode]]],
     *,
-    alignment: Sequence[str] | None = None,
+    alignment: Optional[Sequence[str]] = None,
     escape: bool = True,
 ) -> MarkdownNode:
     """Return a markdown table node."""
@@ -864,7 +874,7 @@ def table(
             )
 
     # Render header row
-    header_cells: list[str] = []
+    header_cells: List[str] = []
     escaped_flag = escape
     for cell in headers:
         text, cell_escaped = _render_table_cell(cell, escape=escape)
@@ -886,9 +896,9 @@ def table(
         align_row = " | ".join(align_map[a] for a in alignment)
 
     # Render data rows
-    row_lines: list[str] = []
+    row_lines: List[str] = []
     for row in rows:
-        row_cells: list[str] = []
+        row_cells: List[str] = []
         for cell in row:
             text, cell_escaped = _render_table_cell(cell, escape=escape)
             row_cells.append(text)
@@ -941,3 +951,4 @@ def link_reference(ref_id: str, url: str) -> MarkdownNode:
 ###############################################################################
 # House-keeping: hide helper names from * import                             #
 ###############################################################################
+

@@ -1,11 +1,13 @@
-import pytest  # type: ignore
-import re
 import importlib
+import re
 from typing import List, Tuple
+
+import pytest  # type: ignore
 
 # Hypothesis for property-based testing (pytest integration)
 pytest.importorskip("hypothesis")
-from hypothesis import given, strategies as st  # type: ignore
+from hypothesis import given  # type: ignore
+from hypothesis import strategies as st
 
 markdown_strings = importlib.import_module("markdown_strings")
 
@@ -31,7 +33,7 @@ def _is_escaped(text: str) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Character-safety (leaf-level)                                                
+# Character-safety (leaf-level)
 # ---------------------------------------------------------------------------
 
 
@@ -58,7 +60,7 @@ def test_code_fence_longer_than_backticks_inside(s: str):
 
 
 # ---------------------------------------------------------------------------
-# Escape propagation (taint-analysis lattice)                                  
+# Escape propagation (taint-analysis lattice)
 # ---------------------------------------------------------------------------
 
 
@@ -72,7 +74,7 @@ def test_escape_flag_is_conservative(items: List[Tuple[str, bool]]):
 
 
 # ---------------------------------------------------------------------------
-# Monotone information-flow                                                   
+# Monotone information-flow
 # ---------------------------------------------------------------------------
 
 
@@ -84,7 +86,7 @@ def test_unsafe_child_propagates_upwards(s: str):
 
 
 # ---------------------------------------------------------------------------
-# Invalid constructions are rejected (type-safety)                             
+# Invalid constructions are rejected (type-safety)
 # ---------------------------------------------------------------------------
 
 
@@ -96,7 +98,7 @@ def test_block_inside_inline_is_forbidden(s: str):
 
 
 # ---------------------------------------------------------------------------
-# Safe-mode forbids raw injection                                              
+# Safe-mode forbids raw injection
 # ---------------------------------------------------------------------------
 
 
@@ -107,4 +109,4 @@ def test_safe_mode_blocks_unescaped(s: str):
         with pytest.raises(markdown_strings.SafeModeError):
             markdown_strings.bold(s, escape=False)
     finally:
-        markdown_strings.set_safe_mode(False) 
+        markdown_strings.set_safe_mode(False)

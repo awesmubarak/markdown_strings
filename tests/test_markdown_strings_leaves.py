@@ -5,7 +5,8 @@ from typing import List
 import pytest  # type: ignore
 
 pytest.importorskip("hypothesis")
-from hypothesis import given, strategies as st, assume  # type: ignore
+from hypothesis import assume, given  # type: ignore
+from hypothesis import strategies as st
 
 markdown_strings = importlib.import_module("markdown_strings")
 
@@ -29,7 +30,7 @@ def _is_escaped(text: str) -> bool:
 ###############################################################################
 
 # ---------------------------------------------------------------------------
-# Heading                                                                     
+# Heading
 # ---------------------------------------------------------------------------
 
 
@@ -45,7 +46,7 @@ def test_heading_prefix(level: int, s: str):
 
 
 # ---------------------------------------------------------------------------
-# Horizontal rule                                                             
+# Horizontal rule
 # ---------------------------------------------------------------------------
 
 
@@ -56,7 +57,7 @@ def test_horizontal_rule_constant():
 
 
 # ---------------------------------------------------------------------------
-# Bullet list                                                                 
+# Bullet list
 # ---------------------------------------------------------------------------
 
 
@@ -73,14 +74,14 @@ def test_bullet_list_render(items: List[str]):
     # One markdown line per item plus trailing blank line from block terminator
     lines = [ln for ln in node.text.rstrip("\n").split("\n") if ln]
     assert len(lines) == len(items)
-    for src, rendered in zip(items, lines):
+    for _src, rendered in zip(items, lines):
         assert rendered.startswith("- ")
         assert _is_escaped(rendered[2:])
     assert node.escaped is True
 
 
 # ---------------------------------------------------------------------------
-# Ordered list                                                                
+# Ordered list
 # ---------------------------------------------------------------------------
 
 
@@ -103,7 +104,7 @@ def test_ordered_list_numbering(items: List[str], start: int):
 
 
 # ---------------------------------------------------------------------------
-# Code block                                                                  
+# Code block
 # ---------------------------------------------------------------------------
 
 
@@ -128,7 +129,7 @@ def test_code_block_fence_longer_than_backticks(s: str, lang):
 
 
 # ---------------------------------------------------------------------------
-# Table                                                                       
+# Table
 # ---------------------------------------------------------------------------
 
 
@@ -136,29 +137,29 @@ def test_code_block_fence_longer_than_backticks(s: str, lang):
 def test_table_shape_and_escaping(data):
     # Dynamically build headers and rows with consistent column count
     cols = data.draw(st.integers(min_value=1, max_value=5), label="cols")
-    
+
     cell_strategy = st.text(
         min_size=0,
         max_size=20,
         alphabet=st.characters(blacklist_characters=["\n", "\r"]),
     )
-    
+
     headers = data.draw(st.lists(cell_strategy, min_size=cols, max_size=cols), label="headers")
     # Up to 6 data rows
     row_strategy = st.lists(cell_strategy, min_size=cols, max_size=cols)
     rows = data.draw(st.lists(row_strategy, min_size=0, max_size=6), label="rows")
-    
+
     node = markdown_strings.table(headers, rows)
-    
+
     # --- Parse lines while keeping all significant blank cells ---
     lines = node.text.splitlines()
     if lines and lines[-1] == "":  # drop block terminator blank line
         lines = lines[:-1]
-    
+
     import re as _re
     align_pattern = _re.compile(r"^\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)*$")
-    align_idx = next(i for i, l in enumerate(lines) if align_pattern.match(l))
-    
+    align_idx = next(i for i, line in enumerate(lines) if align_pattern.match(line))
+
     # Header verification
     header_line = lines[0]
     header_cells = header_line.split(" | ") if cols > 1 else [header_line]
@@ -166,24 +167,24 @@ def test_table_shape_and_escaping(data):
     while header_cells and header_cells[-1] == "":
         header_cells.pop()
     assume(len(header_cells) == cols)
-    
+
     align_cells = lines[align_idx].split(" | ") if cols > 1 else [lines[align_idx]]
     assert len(align_cells) == cols
-    
-    data_lines = [l for l in lines[align_idx + 1 :] if l.strip() != ""]
+
+    data_lines = [line for line in lines[align_idx + 1 :] if line.strip() != ""]
     assume(len(data_lines) == len(rows))
-    
+
     for row_line in data_lines:
         data_cells = row_line.split(" | ") if cols > 1 else [row_line]
         assert len(data_cells) == cols
         for cell in data_cells:
             assert _is_escaped(cell)
-    
+
     assert node.escaped is True
 
 
 # ---------------------------------------------------------------------------
-# Checklist                                                                   
+# Checklist
 # ---------------------------------------------------------------------------
 
 
@@ -208,4 +209,4 @@ def test_checklist_pattern(items: List[str], checked):
     for flag, rendered in zip(checked, lines):
         expected_prefix = "- [x] " if flag else "- [ ] "
         assert rendered.startswith(expected_prefix)
-    assert node.escaped is True 
+    assert node.escaped is True
