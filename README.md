@@ -1,276 +1,272 @@
-# Markdown_strings package
+# Markdown Strings (ALPHA)
 
-Markdown is a markup language with plain text formatting syntax. This package
-allows the creation of markdown-compliant strings. The following is a summary
-of features with usage examples.
+A type-safe Python package for generating Markdown.
 
-Note: asterisk and underscores are escaped for all functions that do not format
-to code (`inline_code` and `code_block`).
+This library provides a set of functions to build complex Markdown documents programmatically, with a focus on correctness and security. It ensures that all generated content is properly escaped, preventing common rendering issues and potential injection vulnerabilities.
+
+## Table of Contents
+
+- [Key Features](#key-features)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Available Functions](#available-functions)
+  - [Inline Elements](#inline-elements)
+  - [Block Elements](#block-elements)
+  - [Container Elements](#container-elements)
+  - [Special Elements](#special-elements)
+- [Composition](#composition)
+- [Escaping and Safety](#escaping-and-safety)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Key Features
+
+- **Type-Safe by Design**: The API is designed to prevent incorrect nesting of Markdown elements (e.g., block elements inside inline elements).
+- **Secure by Default**: All string content is automatically escaped by default, preventing unintended Markdown interpretation and potential security vulnerabilities.
+- **Safe Mode Protection**: An optional "safe mode" can be enabled to completely reject any unescaped content, ideal for applications handling untrusted input.
+- **Comprehensive Markdown Support**: Supports a wide range of Markdown features, including headings, lists, tables, code blocks, and more.
+- **Immutable Data Structures**: The core `MarkdownNode` is immutable, allowing for safe composition of Markdown fragments.
 
 ## Installation
 
-To install from pypi run
-
-```sh
+```bash
 pip install markdown_strings
 ```
 
-## Character escaping
+*(Note: This package is not yet on PyPI. This is the intended installation command once published.)*
 
-Every standard function includes an optional keyword argument `esc`, set to
-`True` by default. This parameter determines whether to escape characters in
-the input text, thereby preventing them from triggering markdown formatting.
+## Quick Start
 
-## Standard markdown features
-
-### Header
-
-Return a header of specified level.
-
-Keyword arguments:
-
--   style -- Specifies the header style (default atx). The "atx" style uses
-    hash signs, and has 6 levels. The "setext" style uses dashes or equals
-    signs for headers of levels 1 and 2 respectively, and is limited to
-    those two levels. The number of dashes or equals signs is either the length
-    of the text, or 3.
-
-Specifying a level outside of the style's range results in a ValueError.
+You can generate inline Markdown fragments directly:
 
 ```python
->>> header("Main Title", 1)
-'# Main Title'
->>> header("Smaller subtitle", 4)
-'#### Smaller subtitle'
->>> header("Setext style", 2, style="setext")
-'Setext style\\n------------'
+import markdown_strings as md
+
+print(md.bold("Make this bold"))
 ```
 
-### Italics
+This will produce:
 
-Return italics formatted text.
-
-```Python
->>> italics("This text is italics")
-'_This text is italics_'
+```markdown
+**Make this bold**
 ```
 
-### Bold
-
-Return bold formatted text.
+Or you can build a whole Markdown document:
 
 ```python
->>> bold("This text is bold")
-'**This text is bold**'
+import markdown_strings as md
+
+doc = md.document([
+    md.h1("My Markdown Document"),
+    md.paragraph([
+        "This is a paragraph containing ",
+        md.bold("bold text"),
+        " and ",
+        md.italic("italic text"),
+        "."
+    ]),
+    md.bullet_list([
+        "First item",
+        "Second item",
+        "Third item",
+    ]),
+    md.code_block("print('Hello, World!')", language="python"),
+])
+
+print(doc)
 ```
 
-### Inline code
+This will produce the following Markdown output:
 
-Return formatted inline code.
+```markdown
+# My Markdown Document
+
+This is a paragraph containing **bold text** and *italic text*.
+
+- First item
+- Second item
+- Third item
 
 ```python
->>> inline_code("This text is code")
-'`This text is code`'
+print('Hello, World!')
 ```
 
-### Code block
+## Available Functions
 
-Return a code block.
+This library provides a comprehensive set of functions for generating various Markdown elements.
 
-If a language is specified a fenced code block is produced, otherwise the
-block is indented by four spaces.
+### Inline Elements
 
-Keyword arguments:
+These functions generate inline Markdown elements.
 
--   language -- Specifies the language to fence the code in (default blank).
+- `md.bold(content)`: Makes text bold.
+- `md.italic(content)`: Makes text italic.
+- `md.strikethrough(content)`: Creates strikethrough text.
+- `md.code(content)`: Formats text as inline code.
+- `md.link(text, url)`: Creates a hyperlink.
+- `md.image(alt_text, url)`: Embeds an image.
+- `md.reference_link(text, ref_id)`: Creates a link to a reference.
+- `md.line_break()`: Adds a hard line break within a paragraph.
 
-````python
-    >>> code_block("This is a simple codeblock.")
-    '    This is a simple codeblock.'
-    >>> code_block("This is a simple codeblock.\\nBut it has a linebreak!")
-    '    This is a simple codeblock.\\n    But it has a linebreak!'
-    >>> code_block("This block of code has a specified language.", "python")
-    '```python\\nThis block of code has a specified language.\\n```'
-    >>> code_block("So\\nmany\\nlinebreaks.", "python")
-    '```python\\nSo\\nmany\\nlinebreaks.\\n```'
-````
+### Block Elements
 
-### Link
+These functions generate block-level Markdown elements.
 
-Return an inline link.
+- `md.paragraph(content)`: Creates a paragraph.
+- `md.heading(level, content)`: Creates a heading of a specific level (1-6).
+- `md.h1(content)`, `md.h2(content)`, ..., `md.h6(content)`: Shorthand for headings.
+- `md.blockquote(content)`: Creates a blockquote.
+- `md.code_block(content, language=None)`: Creates a block of code, with optional language highlighting.
+
+### Container Elements
+
+These functions create elements that can contain other elements.
+
+- `md.document(children)`: Creates a full Markdown document.
+- `md.bullet_list(items)`: Creates an unordered list.
+- `md.ordered_list(items, start=1)`: Creates an ordered list.
+- `md.checklist(items, checked=None)`: Creates a checklist.
+- `md.table(headers, rows, alignment=None)`: Creates a table.
+
+### Special Elements
+
+These are special-purpose functions.
+
+- `md.horizontal_rule()`: Creates a horizontal rule.
+- `md.link_reference(ref_id, url)`: Defines a link reference.
+- `md.empty()`: Represents an empty node, useful for conditional content.
+
+## Composition
+
+The functions in `markdown-strings` are designed to be composed together to build complex Markdown documents. You can nest inline elements within block elements, and block elements within container elements.
+
+For example, you can create a list where some items are bold and others are italic:
 
 ```python
->>> link ("This is a link", "https://github.com/awesmubarak/markdown_strings")
-'[This is a link](https://github.com/awesmubarak/markdown_strings)'
+import markdown_strings as md
+
+my_list = md.bullet_list([
+    md.bold("This is a bold item"),
+    md.italic("This is an italic item"),
+    "This is a regular item"
+])
+
+print(my_list)
 ```
 
-### Image
+This produces:
 
-Return an inline image.
+```markdown
+- **This is a bold item**
+- *This is an italic item*
+- This is a regular item
+```
 
-Keyword arguments:
+The exact rules for which elements can be nested inside others are still being finalised. As this is an alpha version, we encourage you to use your best judgment and experiment. The library will raise an `InvalidNestingError` if you attempt an invalid combination. Full documentation on composition rules will be available in a future release.
 
--   title -- Specify the title of the image, as seen when hovering over it.
+## Escaping and Safety
+
+By default, `markdown_strings` automatically escapes all string content to ensure it renders as plain text, preventing unintended Markdown interpretation and potential security issues.
+
+### Automatic Escaping
+
+When you pass regular strings to any function, special Markdown characters are automatically escaped (taking into account the specific feature you're using):
 
 ```python
->>> image("This is an image", "https://avatars3.githubusercontent.com/u/24862378")
-'![This is an image](https://avatars3.githubusercontent.com/u/24862378)'
->>> image("This is an image", "https://avatars3.githubusercontent.com/u/24862378", "awes")
-'![This is an image](https://avatars3.githubusercontent.com/u/24862378) "awes"'
+import markdown_strings as md
+
+# These strings contain Markdown syntax, but will be escaped
+text_with_markdown = "# This looks like a header\n* And this like a list"
+result = md.paragraph(text_with_markdown)
+print(result)
 ```
 
-### Unordered list
+Output:
+```markdown
+\# This looks like a header
+\* And this like a list
+```
 
-Return an unordered list from an list.
+### Disabling Escaping
+
+If you need to include raw Markdown content, you can disable escaping using the `escape=False` parameter available on most functions:
 
 ```python
->>> unordered_list(["first", "second", "third", "fourth"])
-'-   first\\n-   second\\n-   third\\n-   fourth'
->>> unordered_list([1, 2, 3, 4, 5])
-'-   1\\n-   2\\n-   3\\n-   4\\n-   5'
+import markdown_strings as md
+
+# This will NOT be escaped - use with caution!
+raw_markdown = "**This will be bold** and *this italic*"
+result = md.paragraph(raw_markdown, escape=False)
+print(result)
 ```
 
-### Ordered list
+Output:
+```markdown
+**This will be bold** and *this italic*
+```
 
-Return an ordered list from an list.
+**⚠️ Warning**: Only use `escape=False` with trusted content. Unescaped user input could potentially break your document structure.
+
+### Safe Mode
+
+For applications that handle untrusted input, you can enable "safe mode" to completely prevent unescaped content:
 
 ```python
->>> ordered_list(["first", "second", "third", "fourth"])
-'1.  first\\n2.  second\\n3.  third\\n4.  fourth'
+import markdown_strings as md
+
+# Enable safe mode globally
+md.set_safe_mode(True)
+
+# This will now raise an exception
+try:
+    result = md.paragraph("Some text", escape=False)
+except md.SafeModeError as e:
+    print(f"Safety violation: {e}")
+
+# Check if safe mode is enabled
+if md.is_safe_mode():
+    print("Safe mode is active")
+
+# Disable safe mode
+md.set_safe_mode(False)
 ```
 
-### Blockquote
+Safe mode is particularly useful in web applications, documentation generators, or any system that processes user-generated content.
 
-Return a blockquote.
+## Contributing
 
-```python
->>> blockquote("A simple blockquote")
-'> A simple blockquote'
+Contributions are welcome! Please feel free to open an issue or submit a pull request.
+
+### Development Setup
+
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management. To get started:
+
+```bash
+# Clone the repository
+git clone https://github.com/awesmubarak/markdown_strings
+cd markdown_strings
+
+# Install dependencies
+uv sync --group dev
 ```
 
-### Horizontal rule
+### Code Quality
 
-Return a horizontal rule.
+Before submitting a pull request, please ensure your code passes all quality checks by running these commands:
 
-Keyword arguments:
+```bash
+# Check code formatting and style
+uv run ruff check .
 
--   length -- Specifies the length of the rule (default 79, minimum 3).
--   style -- Character used for the rule (may be either "\_" or "\*").
+# Type checking
+uv run mypy src/
 
-If the length is too low, or the style is invalid, a ValueError is raised.
-
-```python
->>> horizontal_rule()
-'_______________________________________________________________________________'
->>> horizontal_rule(length=5, style="*")
-'*****'
+# Run tests
+uv run pytest
 ```
 
-## Non-standard markdown
+All three commands should pass without errors before submitting your contribution.
 
-### Strikethrough
+## License
 
-Return text with strike-through formatting.
-
-```python
->>> strikethrough("This is a lie")
-'~This is a lie~'
-```
-
-### Task list
-
-Return a task list.
-
-The task_list should be a 2-dimensional iterable; the first item should be the
-task text and the second the boolean completion state.
-
-```python
->>> task_list([["Be born", True], ["Be dead", False]])
-'- [X] Be born\\n- [ ] Be dead'
-```
-
-### Table row
-
-Return a single table row.
-
-Keyword arguments:
-
--   pad -- The pad should be an list of the same size as the input text list.
-    It will be used to format the row's padding.
-
-```python
->>> table_row(["First column", "Second", "Third"])
-'| First column | Second | Third |'
->>> table_row(["First column", "Second", "Third"], [10, 10, 10])
-'| First column | Second     | Third      |'
-```
-
-### Delimiter row
-
-Return a delimiter row for use in a table.
-
-Keyword arguments:
-
--   column_lengths -- An iterable that specifies the length of each column.
-
-```python
->>> table_delimiter_row(3)
-'| --- | --- | --- |'
->>> table_delimiter_row(3, column_lengths=[4,5,6])
-'| ---- | ----- | ------ |'
-```
-
-### Table
-
-Return a formatted table, generated from lists representing columns.
-
-The function requires a 2-dimensional list, where each list is a column
-of the table. This will be used to generate a formatted table in string
-format.
-
-```python
->>> table([["1","2","3"], ["4","5","6"], ["7","8","9"]])
-'| 1 | 4 | 7 |\\n| --- | --- | --- |\\n| 2 | 5 | 8 |\\n| 3 | 6 | 9 |'
-
->>> table([["Name", "Awes", "Bob"], ["User", "mub123", ""]])
-'| Name | User   |\\n| ---- | ------ |\\n| Awes | mub123 |\\n| Bob  |        |'
-```
-
-This table, when parsed, will look like this:
-
-| Name | User   |
-| ---- | ------ |
-| Awes | mub123 |
-| Bob  |        |
-
-### Table from rows
-
-Return a formatted table, using each list as the list. The specifics are the
-same as those for the table function.
-
-```python
->>> table_from_rows([["1","2","3"],["4","5","6"],["7","8","9"]])
-'| 1 | 2 | 3 |\\n| --- | --- | --- |\\n| 4 | 5 | 6 |\\n| 7 | 8 | 9 |'
-```
-
-## Helper functions
-
-Return text with formatting escaped
-
-Markdown requires a backslash before literal underscores or asterisk, to avoid
-formatting to bold or italics.
-
-Keyword arguments:
-
--   esc -- Specifies if text should be escaped or not. This exists incase input text
-    should not be escaped
-```python
->>> esc_format("Normal text", esc=True)
-'Normal text'
->>> esc_format("Text with **bold**", esc=True) == r'Text with \\*\\*bold\\*\\*'
-True
->>> esc_format("Text with _italics_", esc=True) == r'Text with \\_italics\\_'
-True
->>> esc_format("Text with _**complicated** format_", esc=True) == r'Text with \\_\\*\\*complicated\\*\\* format\\_'
-True
-```
+This project is licensed under the MIT License.
