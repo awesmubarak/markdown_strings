@@ -13,8 +13,9 @@ __all__ = [
     # Global helpers
     "set_safe_mode",
     "is_safe_mode",
-    # Core data structure
+    # Core data structures
     "MarkdownNode",
+    "MarkdownString",
     # Exceptions
     "MarkdownError",
     "InvalidNestingError",
@@ -55,6 +56,20 @@ __all__ = [
 ###############################################################################
 # Public data structure and exceptions                                       #
 ###############################################################################
+
+
+class MarkdownString(str):
+    """A string that carries escape information for markdown content."""
+    
+    escaped: bool
+    
+    def __new__(cls, value: str, escaped: bool = True):
+        instance = str.__new__(cls, value)
+        instance.escaped = escaped  # type: ignore[misc]
+        return instance
+    
+    def __repr__(self) -> str:  # pragma: no cover – cosmetic only
+        return f"MarkdownString({str.__repr__(self)}, escaped={self.escaped})"
 
 
 @dataclass(frozen=True)
@@ -352,7 +367,13 @@ def _build_inline(
     parts: list[str] = []
 
     for item in items:
-        if isinstance(item, str):
+        if isinstance(item, MarkdownString):
+            # MarkdownString carries its own escape information
+            parts.append(str(item))
+            if not item.escaped:
+                escaped_flag = False
+            continue
+        elif isinstance(item, str):
             parts.append(escape_text(item, context=type_name) if escape else item)
             continue
 
@@ -379,10 +400,11 @@ def _build_inline(
 ###############################################################################
 
 
-def bold(content: Union[str, MarkdownNode, Sequence[Union[str, MarkdownNode]], None], *, escape: bool = True) -> MarkdownNode:
+def bold(content: Union[str, MarkdownNode, Sequence[Union[str, MarkdownNode]], None], *, escape: bool = True) -> MarkdownString:
     """Return **bold** markdown for *content*."""
 
-    return _build_inline("bold", "**", "**", content, accepts=BOLD_ACCEPTS, escape=escape)
+    node = _build_inline("bold", "**", "**", content, accepts=BOLD_ACCEPTS, escape=escape)
+    return MarkdownString(node.text, escaped=node.escaped)
 
 
 def italic(content: Union[str, MarkdownNode, Sequence[Union[str, MarkdownNode]], None], *, escape: bool = True) -> MarkdownNode:
@@ -566,21 +588,27 @@ def heading(level: int, content: Union[str, MarkdownNode, Sequence[Union[str, Ma
 # Convenience wrappers.
 
 def h1(content, *, escape: bool = True):  # noqa: D401 – no return type for brevity
+    """Return a level-1 heading."""
     return heading(1, content, escape=escape)
 
 def h2(content, *, escape: bool = True):
+    """Return a level-2 heading."""
     return heading(2, content, escape=escape)
 
 def h3(content, *, escape: bool = True):
+    """Return a level-3 heading."""
     return heading(3, content, escape=escape)
 
 def h4(content, *, escape: bool = True):
+    """Return a level-4 heading."""
     return heading(4, content, escape=escape)
 
 def h5(content, *, escape: bool = True):
+    """Return a level-5 heading."""
     return heading(5, content, escape=escape)
 
 def h6(content, *, escape: bool = True):
+    """Return a level-6 heading."""
     return heading(6, content, escape=escape)
 
 

@@ -37,12 +37,12 @@ def _is_escaped(text: str) -> bool:
 
 @given(st.text(min_size=0, max_size=100))
 def test_bold_escapes_inner_text(s: str):
-    """Escaping lemma: bold(x).text is **y** where y is fully escaped."""
+    """Escaping lemma: bold(x) is **y** where y is fully escaped."""
 
-    node = markdown_strings.bold(s)
-    inner = node.text[2:-2]  # remove surrounding **
+    result = markdown_strings.bold(s)
+    inner = str(result)[2:-2]  # remove surrounding **
     assert _is_escaped(inner)
-    assert node.escaped is True
+    assert result.escaped is True
 
 
 @given(st.text(min_size=0, max_size=100))
